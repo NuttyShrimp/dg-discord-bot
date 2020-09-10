@@ -26,7 +26,6 @@ const FETCH_OPS = {
   'method': 'GET',
   'headers': { 'User-Agent': `New-Brussel bot ${require('./package.json').version} , Node ${process.version} (${process.platform}${process.arch})` }
 };
-const BOT_TOKEN = "NzQ1MTkyODc5MTY4Njg0MTUy.XzuM8w.EE2CcvxC0khoqEf6KYEThRdnCXU";
 const PREFIX = "/"
 
 const GetPlayers = function() {
@@ -99,4 +98,4 @@ bot.on('message',async function(message){
     };
 });
 
-bot.login(BOT_TOKEN);
+bot.login(process.env.BOT_TOKEN);
