@@ -117,7 +117,7 @@ bot.on('message',async function(message){
                             .setTitle('De GrensRP is momenteel Online!')
                             .addField(
                                 '**IP: **`game.degrensrp.be:30120`',
-                                '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverMaxclients+"/"+output.virtualserverClientsonline+"\n**Queue: **"+vars["sv_queueCount"]
+                                '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
                             )
                             message.channel.send(embed);
                         })
