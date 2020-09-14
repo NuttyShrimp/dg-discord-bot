@@ -119,7 +119,11 @@ bot.on('message',async function(message){
                                 '**IP: **`game.degrensrp.be:30120`',
                                 '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
                             )
-                            message.channel.send(embed);
+                            message.channel.send(embed).then((e)=>{
+                                setTimeout(() => {
+                                    e.delete();
+                                }, 10000);
+                            });
                         })
                     }).catch(function(e){
                         console.log(e);
