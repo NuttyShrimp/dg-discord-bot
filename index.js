@@ -121,6 +121,7 @@ bot.on('message',async function(message){
                             )
                             message.channel.send(embed).then((e)=>{
                                 setTimeout(() => {
+                                    message.delete();
                                     e.delete();
                                 }, 10000);
                             });
