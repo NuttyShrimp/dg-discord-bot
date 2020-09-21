@@ -109,30 +109,38 @@ bot.on('message',async function(message){
             if (message.content.startsWith(PREFIX)){
                 let command = message.content.substr(PREFIX.length)
                 if(command === "status"){
-                    var embed = new Discord.MessageEmbed()
-                    .setColor("#E95578");
-                    getVars().then((vars)=>{
-                        teamspeak.serverInfo().then(output => {
-                            embed
-                            .setTitle('DeGrens RP is momenteel Online!')
-                            .addField(
-                                '**IP: **`game.degrensrp.be:30120`',
-                                '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
-                            )
-                            message.channel.send(embed).then((e)=>{
-                                setTimeout(() => {
-                                    message.delete();
-                                    e.delete();
-                                }, 10000);
-                            });
+                    if(message.member.id === "672042494363435009"){
+                        message.channel.send('Neen').then((e)=>{
+                            message.delete();
+                            setTimeout(() => {
+                                e.delete();
+                            }, 5000);
                         })
-                    }).catch(function(e){
-                        console.log(e);
-                        embed
-                        .setTitle('DeGrens RP is momenteel Offline!')
-                        message.channel.send(embed) 
-                    })
-                    
+                    } else {
+                        var embed = new Discord.MessageEmbed()
+                        .setColor("#E95578");
+                        getVars().then((vars)=>{
+                            teamspeak.serverInfo().then(output => {
+                                embed
+                                .setTitle('DeGrens RP is momenteel Online!')
+                                .addField(
+                                    '**IP: **`game.degrensrp.be:30120`',
+                                    '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
+                                )
+                                message.channel.send(embed).then((e)=>{
+                                    setTimeout(() => {
+                                        message.delete();
+                                        e.delete();
+                                    }, 10000);
+                                });
+                            })
+                        }).catch(function(e){
+                            console.log(e);
+                            embed
+                            .setTitle('DeGrens RP is momenteel Offline!')
+                            message.channel.send(embed) 
+                        })
+                    }
                 };
             };
         };
