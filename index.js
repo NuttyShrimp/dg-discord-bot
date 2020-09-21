@@ -109,7 +109,7 @@ bot.on('message',async function(message){
             if (message.content.startsWith(PREFIX)){
                 let command = message.content.substr(PREFIX.length)
                 if(command === "status"){
-                    if(message.member.id === "672042494363435009" || message.member.id === "664582321458118688"){
+                    if(message.member.id === "672042494363435009" || message.member.id === "664582321458118688" || message.member.id === "350589164485345281"){
                         message.channel.send('Neen').then((e)=>{
                             message.delete();
                             setTimeout(() => {
