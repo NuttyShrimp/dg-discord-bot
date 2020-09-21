@@ -114,7 +114,7 @@ bot.on('message',async function(message){
                     getVars().then((vars)=>{
                         teamspeak.serverInfo().then(output => {
                             embed
-                            .setTitle('De GrensRP is momenteel Online!')
+                            .setTitle('DeGrens RP is momenteel Online!')
                             .addField(
                                 '**IP: **`game.degrensrp.be:30120`',
                                 '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
@@ -129,7 +129,7 @@ bot.on('message',async function(message){
                     }).catch(function(e){
                         console.log(e);
                         embed
-                        .setTitle('De GrensRP is momenteel Offline!')
+                        .setTitle('DeGrens RP is momenteel Offline!')
                         message.channel.send(embed) 
                     })
                     
