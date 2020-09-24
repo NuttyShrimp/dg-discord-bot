@@ -132,7 +132,30 @@ bot.on('message',async function(message){
                         .setTitle('DeGrens RP is momenteel Offline!')
                         message.channel.send(embed) 
                     })
-                };
+                } else if(command === "socials" || command === "social"){
+                    var embed = new Discord.MessageEmbed()
+                    .setColor("#E95578");
+                    getVars().then((vars)=>{
+                        teamspeak.serverInfo().then(output => {
+                            embed
+                            .setTitle('DeGrens op social media!')
+                            .addFields(
+                                {name: "Twitter", value: "https://twitter.com/GrensRp"},
+                            )
+                            message.channel.send(embed).then((e)=>{
+                                setTimeout(() => {
+                                    message.delete();
+                                    e.delete();
+                                }, 10000);
+                            });
+                        })
+                    }).catch(function(e){
+                        console.log(e);
+                        embed
+                        .setTitle('DeGrens RP is momenteel Offline!')
+                        message.channel.send(embed) 
+                    })
+                }
             };
         };
     };
