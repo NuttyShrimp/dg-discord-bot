@@ -117,7 +117,7 @@ bot.on('message',async function(message){
                             .setTitle('DeGrens RP is momenteel Online!')
                             .addField(
                                 '**IP: **`cfx.re/join/lm9ax4`',
-                                '**Tokovoip: **`ts.degrensrp.be` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
+                                '**Tokovoip: **`degrensrp` \n**Spelers: **'+vars["sv_queueConnectedCount"]+'/'+vars["sv_maxClients"]+"\n**Teamspeak: **"+output.virtualserverClientsonline+"/"+output.virtualserverMaxclients+"\n**Queue: **"+vars["sv_queueCount"]
                             )
                             message.channel.send(embed).then((e)=>{
                                 setTimeout(() => {
@@ -155,6 +155,8 @@ bot.on('message',async function(message){
                         .setTitle('DeGrens RP is momenteel Offline!')
                         message.channel.send(embed) 
                     })
+                } else if(command === "f8"){
+                    message.channel.send('Je kunt joinen via f8 joinen via de volgende adressen:\ncfx.re/join/lm9ax4\nfivem.nuttyshrimp.me *backup*')
                 }
             };
         };
