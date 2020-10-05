@@ -134,29 +134,32 @@ bot.on('message',async function(message){
                     })
                 } else if(command === "socials" || command === "social"){
                     var embed = new Discord.MessageEmbed()
-                    .setColor("#E95578");
-                    getVars().then((vars)=>{
-                        teamspeak.serverInfo().then(output => {
-                            embed
-                            .setTitle('DeGrens op social media!')
-                            .addFields(
-                                {name: "Twitter", value: "https://twitter.com/GrensRp"},
-                            )
-                            message.channel.send(embed).then((e)=>{
-                                setTimeout(() => {
-                                    message.delete();
-                                    e.delete();
-                                }, 10000);
-                            });
-                        })
-                    }).catch(function(e){
-                        console.log(e);
-                        embed
-                        .setTitle('DeGrens RP is momenteel Offline!')
-                        message.channel.send(embed) 
-                    })
+                    .setColor("#E95578")
+                    .setTitle('DeGrens op social media!')
+                    .addFields(
+                        {name: "Twitter", value: "https://twitter.com/GrensRp"},
+                    );
+                    message.channel.send(embed).then((e)=>{
+                        setTimeout(() => {
+                            message.delete();
+                            e.delete();
+                        }, 10000);
+                    });
                 } else if(command === "f8"){
                     message.channel.send('Je kunt joinen via f8 joinen via de volgende adressen:\ncfx.re/join/lm9ax4\nfivem.nuttyshrimp.me *backup*')
+                } else if(command === "patreon" || command === "doneren" || command === "donate"){
+                    var embed = new Discord.MessageEmbed()
+                    .setColor("#E95578")
+                    .setTitle('Steun DeGrens!')
+                    .addFields(
+                        {name: "Steun ons d.m.v. een patreon subscription", value: "https://www.patreon.com/DEGRENSRP"},
+                    );
+                    message.channel.send(embed).then((e)=>{
+                        setTimeout(() => {
+                            message.delete();
+                            e.delete();
+                        }, 10000);
+                    });
                 }
             };
         };
