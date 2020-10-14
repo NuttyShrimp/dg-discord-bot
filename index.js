@@ -162,6 +162,12 @@ bot.on('message',async function(message){
                     });
                 }
             };
+            var embed = new Discord.MessageEmbed();
+            embed.setColor("#E95578")
+            .setAuthor(message.author.tag, message.author.avatarURL())
+            .setTitle('Message send in #'+message.channel.name)
+            .setDescription(message.content)
+            bot.channels.cache.get(process.env.MESSAGELOGCHANNEL).send(embed)
         };
     };
 });
