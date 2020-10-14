@@ -167,7 +167,7 @@ bot.on('message',async function(message){
             .setAuthor(message.author.tag, message.author.avatarURL())
             .setTitle('Message send in #'+message.channel.name)
             .setDescription(message.content)
-            bot.channels.cache.get(process.env.MESSAGELOGCHANNEL).send(embed)
+            bot.channels.cache.get(toString(process.env.MESSAGELOGCHANNEL)).send(embed)
         };
     };
 });
