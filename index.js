@@ -60,15 +60,13 @@ const getVars = function() {
 	});
 };
 
-
-
 const teamspeak = new TeamSpeak({
 	host: '146.59.145.65',
-    protocol: QueryProtocol.RAW, //optional
-    queryport: 10011, //optional
-    serverport: 9987,
-    username: process.env.QUERY_USER,
-    password: process.env.QUERY_PASSWORD,
+	protocol: QueryProtocol.RAW, //optional
+	queryport: 10011, //optional
+	serverport: 9987,
+	username: process.env.QUERY_USER,
+	password: process.env.QUERY_PASSWORD,
 	nickname: 'Discord Bot'
 });
 
@@ -112,8 +110,8 @@ bot.on('ready', function() {
 });
 
 bot.on('message', async function(message) {
-    if (!message.author.bot) {
-        if (message.member) {
+	if (!message.author.bot) {
+		if (message.member) {
 			if (message.content.startsWith(PREFIX)) {
 				let command = message.content.substr(PREFIX.length);
 				if (command === 'status') {
@@ -121,10 +119,10 @@ bot.on('message', async function(message) {
 					getVars()
 						.then((vars) => {
 							teamspeak.serverInfo().then((output) => {
-                            embed
-                            .setTitle('DeGrens RP is momenteel Online!')
-                            .addField(
-                                '**IP: **`cfx.re/join/lm9ax4`',
+								embed
+									.setTitle('DeGrens RP is momenteel Online!')
+									.addField(
+										'**IP: **`cfx.re/join/lm9ax4`',
 										'**Tokovoip: **`degrensrp` \n**Spelers: **' +
 											vars['sv_queueConnectedCount'] +
 											'/' +
@@ -137,15 +135,15 @@ bot.on('message', async function(message) {
 											vars['sv_queueCount']
 									);
 								message.channel.send(embed).then((e) => {
-                                setTimeout(() => {
-                                    message.delete();
-                                    e.delete();
-                                }, 10000);
-                            });
+									setTimeout(() => {
+										message.delete();
+										e.delete();
+									}, 10000);
+								});
 							});
-                        })
+						})
 						.catch(function(e) {
-                        console.log(e);
+							console.log(e);
 							embed.setTitle('DeGrens RP is momenteel Offline!');
 							message.channel.send(embed);
 						});
@@ -174,8 +172,9 @@ bot.on('message', async function(message) {
 							message.delete();
 							e.delete();
 						}, 10000);
-                    });
-                }
+					});
+				}
+			}
 			bot.channels.cache
 				.get(process.env.MESSAGELOGCHANNEL)
 				.send(
