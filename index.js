@@ -160,7 +160,7 @@ bot.on('message', async function(message) {
 					});
 				} else if (command === 'f8') {
 					message.channel.send(
-						'Je kunt joinen via f8 joinen via de volgende adressen:\ncfx.re/join/lm9ax4\ndegrens.nuttyshrimp.me *backup*'
+						'Je kunt joinen via f8 joinen via de volgende adressen:\ncfx.re/join/lm9ax4'
 					);
 				} else if (command === 'patreon' || command === 'doneren' || command === 'donate') {
 					var embed = new Discord.MessageEmbed().setColor('#E95578').setTitle('Steun DeGrens!').addFields({
