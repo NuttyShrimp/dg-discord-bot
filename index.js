@@ -175,6 +175,9 @@ bot.on('message', async function(message) {
 					});
 				}
 			}
+			if(message.content.includes('-ticket')){
+				message.channel.send('Je kunt een nieuw ticket aanmaken in <#764844985484705832>')
+			}
 			bot.channels.cache
 				.get(process.env.MESSAGELOGCHANNEL)
 				.send(
