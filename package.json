@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/NuttyShrimp/degrensbot.git"
+    "url": "git+ssh://git@gitlab.pieter557.dscloud.me/degrens/degrensbot.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/NuttyShrimp/degrensbot/issues"
+    "url": "https://gitlab.pieter557.dscloud.me/degrens/degrensbot/issues"
   },
-  "homepage": "https://gitlab.com/NuttyShrimp/degrensbot#readme",
+  "homepage": "https://gitlab.pieter557.dscloud.me/degrens/degrensbot#readme",
   "dependencies": {
     "discord.js": "^12.3.1",
     "dotenv": "^8.2.0",
