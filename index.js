@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const fetchTimeout = require('fetch-timeout');
-const { TeamSpeak, QueryProtocol } = require('ts3-nodejs-library');
 require('dotenv').config();
 
 const BOT_CONFIG = {
@@ -60,29 +59,6 @@ const getVars = function() {
 	});
 };
 
-const teamspeak = new TeamSpeak({
-	host: '198.251.88.29',
-	protocol: QueryProtocol.RAW, //optional
-	queryport: 10011, //optional
-	serverport: 9987,
-	username: process.env.QUERY_USER,
-	password: process.env.QUERY_PASSWORD,
-	nickname: 'Discord Bot'
-});
-
-teamspeak.on('ready', () => {
-	console.log('TS connected');
-});
-
-teamspeak.on('error', (e) => {
-	console.log(e);
-});
-
-teamspeak.on('close', async () => {
-	console.log('disconnected, trying to reconnect...');
-	await teamspeak.reconnect(-1, 1000);
-	console.log('reconnected!');
-});
 
 //DISCORD BOT
 const bot = new Discord.Client(BOT_CONFIG);
@@ -118,28 +94,22 @@ bot.on('message', async function(message) {
 					var embed = new Discord.MessageEmbed().setColor('#E95578');
 					getVars()
 						.then((vars) => {
-							teamspeak.serverInfo().then((output) => {
-								embed
-									.setTitle('DeGrens RP is momenteel Online!')
-									.addField(
-										'**IP: **`cfx.re/join/lm9ax4`',
-										'**Tokovoip: **`degrensrp` \n**Spelers: **' +
-											vars['sv_queueConnectedCount'] +
-											'/' +
-											vars['sv_maxClients'] +
-											'\n**Teamspeak: **' +
-											output.virtualserverClientsonline +
-											'/' +
-											output.virtualserverMaxclients +
-											'\n**Queue: **' +
-											vars['sv_queueCount']
-									);
-								message.channel.send(embed).then((e) => {
-									setTimeout(() => {
-										message.delete();
-										e.delete();
-									}, 10000);
-								});
+							embed
+								.setTitle('DeGrens RP is momenteel Online!')
+								.addField(
+									'**IP: **`cfx.re/join/lm9ax4`',
+									'**Tokovoip: **`degrensrp` \n**Spelers: **' +
+										vars['sv_queueConnectedCount'] +
+										'/' +
+										vars['sv_maxClients'] +
+										'\n**Queue: **' +
+										vars['sv_queueCount']
+								);
+							message.channel.send(embed).then((e) => {
+								setTimeout(() => {
+									message.delete();
+									e.delete();
+								}, 10000);
 							});
 						})
 						.catch(function(e) {
