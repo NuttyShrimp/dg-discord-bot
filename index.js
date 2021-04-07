@@ -16,7 +16,7 @@ const BOT_CONFIG = {
 	disabledEvents: [ 'CHANNEL_PINS_UPDATE', 'TYPING_START' ]
 };
 
-const URL_SERVER = 'http://146.59.145.65:30120';
+const URL_SERVER = 'http://198.251.88.29:30120';
 const URL_PLAYERS = new URL('/players.json', URL_SERVER).toString();
 const URL_INFO = new URL('/info.json', URL_SERVER).toString();
 const FETCH_TIMEOUT = 900;
@@ -24,7 +24,7 @@ const FETCH_OPS = {
 	cache: 'no-cache',
 	method: 'GET',
 	headers: {
-		'User-Agent': `New-Brussel bot ${require('./package.json')
+		'User-Agent': `De-Grens bot ${require('./package.json')
 			.version} , Node ${process.version} (${process.platform}${process.arch})`
 	}
 };
@@ -61,7 +61,7 @@ const getVars = function() {
 };
 
 const teamspeak = new TeamSpeak({
-	host: '146.59.145.65',
+	host: '198.251.88.29',
 	protocol: QueryProtocol.RAW, //optional
 	queryport: 10011, //optional
 	serverport: 9987,
