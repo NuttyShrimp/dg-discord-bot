@@ -15,7 +15,7 @@ const BOT_CONFIG = {
 	disabledEvents: [ 'CHANNEL_PINS_UPDATE', 'TYPING_START' ]
 };
 
-const URL_SERVER = 'http://5.9.199.28:30120';
+const URL_SERVER = 'http://play.degrensrp.be:30120';
 const URL_PLAYERS = new URL('/players.json', URL_SERVER).toString();
 const URL_INFO = new URL('/info.json', URL_SERVER).toString();
 const FETCH_TIMEOUT = 900;
