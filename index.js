@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const fetchTimeout = require('fetch-timeout');
+const BotStat = require('./modules/bot-stats');
+const Reactrole = require('./modules/react-role');
 require('dotenv').config();
 
 const BOT_CONFIG = {
@@ -83,6 +85,8 @@ bot.on('ready', function() {
 				bot.user.setActivity('OFFLINE', { type: 'WATCHING' });
 			});
 	}, 2500);
+	new Reactrole(bot);
+	new BotStat(bot);
 });
 
 bot.on('message', async function(message) {
