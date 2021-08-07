@@ -161,7 +161,11 @@ bot.on('message', async function(message) {
 				const msg = parseAttachments(message);
 				const author = message.member.nickname ? message.member.nickname : message.author.tag
 				const embed = createMsgEmbed('Suggestie', msg, author, message.author.displayAvatarURL())
-				bot.channels.cache.get(process.env.SUGGESTION_CHANNEL).send(embed).then(null).catch(console.error);
+				bot.channels.cache.get(process.env.SUGGESTION_CHANNEL).send(embed).then(msg=>{
+					msg.react('👍').then(() => {
+						msg.react('👎').then(null).catch(console.error);
+					}).catch(console.error);
+				}).catch(console.error);
 				return message.delete();
 			}
 			bot.channels.cache
