@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const fetchTimeout = require('fetch-timeout');
+const path = require('path');
+const { createMsgEmbed, parseAttachments } = require('./utils');
 require('dotenv').config();
 
 const BOT_CONFIG = {
@@ -147,6 +149,24 @@ bot.on('message', async function(message) {
 			}
 			if(message.content.includes('-ticket')){
 				message.channel.send('Je kunt een nieuw ticket aanmaken in <#764844985484705832>')
+			}
+			if (message.channel.id === process.env.BUG_SEND_CHANNEL) {
+				const msg = parseAttachments(message);
+				const author = message.member.nickname ? message.member.nickname : message.author.tag
+				const embed = createMsgEmbed('Bug Report', msg, author, message.author.displayAvatarURL())
+				bot.channels.cache.get(process.env.BUG_RECEIVE_CHANNEL).send(embed).then(null).catch(console.error);
+				return message.delete();
+			}
+			if (message.channel.id === process.env.SUGGESTION_CHANNEL) {
+				const msg = parseAttachments(message);
+				const author = message.member.nickname ? message.member.nickname : message.author.tag
+				const embed = createMsgEmbed('Suggestie', msg, author, message.author.displayAvatarURL())
+				bot.channels.cache.get(process.env.SUGGESTION_CHANNEL).send(embed).then(msg=>{
+					msg.react('👍').then(() => {
+						msg.react('👎').then(null).catch(console.error);
+					}).catch(console.error);
+				}).catch(console.error);
+				return message.delete();
 			}
 			bot.channels.cache
 				.get(process.env.MESSAGELOGCHANNEL)
