@@ -23,7 +23,13 @@ const createMsgEmbed = (title, msg, author, authorimg) => {
 	return embed;
 }
 
+const doesMessageContain = (message='', dict=[]) => {
+	const lowerMsg = message.toLowerCase();
+	return !!dict.find(w => lowerMsg.includes(w));
+}
+
 module.exports = {
 	parseAttachments,
-	createMsgEmbed
+	createMsgEmbed,
+	doesMessageContain
 }

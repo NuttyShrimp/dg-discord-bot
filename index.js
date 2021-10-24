@@ -2,8 +2,9 @@ const Discord = require('discord.js');
 const fetchTimeout = require('fetch-timeout');
 const BotStat = require('./modules/bot-stats');
 const Reactrole = require('./modules/react-role');
-const path = require('path');
 const { createMsgEmbed, parseAttachments } = require('./utils');
+const ScamLinks = require('./modules/scam-link');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const BOT_CONFIG = {
@@ -63,6 +64,9 @@ const getVars = function() {
 	});
 };
 
+if (!global.fetch) {
+	global.fetch = fetch;
+}
 
 //DISCORD BOT
 const bot = new Discord.Client(BOT_CONFIG);
@@ -89,6 +93,7 @@ bot.on('ready', function() {
 	}, 2500);
 	new Reactrole(bot);
 	new BotStat(bot);
+	new ScamLinks(bot);
 });
 
 bot.on('message', async function(message) {
