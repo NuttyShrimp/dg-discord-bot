@@ -160,16 +160,16 @@ bot.on('message', async function(message) {
 				message.channel.send('Je kunt een nieuw ticket aanmaken in <#764844985484705832>')
 			}
 			if (message.channel.id === process.env.BUG_SEND_CHANNEL) {
-				const msg = parseAttachments(message);
+				const photoURL = parseAttachments(message);
 				const author = message.member.nickname ? message.member.nickname : message.author.tag
-				const embed = createMsgEmbed('Bug Report', msg, author, message.author.displayAvatarURL())
+				const embed = createMsgEmbed('Bug Report', message.content, author, message.author.displayAvatarURL(), photoURL)
 				bot.channels.cache.get(process.env.BUG_RECEIVE_CHANNEL).send(embed).then(null).catch(console.error);
 				return message.delete();
 			}
 			if (message.channel.id === process.env.SUGGESTION_CHANNEL) {
-				const msg = parseAttachments(message);
+				const photoURL = parseAttachments(message);
 				const author = message.member.nickname ? message.member.nickname : message.author.tag
-				const embed = createMsgEmbed('Suggestie', msg, author, message.author.displayAvatarURL())
+				const embed = createMsgEmbed('Suggestie', message.content, author, message.author.displayAvatarURL(), photoURL)
 				bot.channels.cache.get(process.env.SUGGESTION_CHANNEL).send(embed).then(msg=>{
 					msg.react('👍').then(() => {
 						msg.react('👎').then(null).catch(console.error);
