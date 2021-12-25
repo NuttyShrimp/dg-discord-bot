@@ -26,15 +26,18 @@ class ScamLinks {
 			console.error('Undefined message content:');
 			return;
 		}
-		if (doesMessageContain(msg.content, this.scamLinks)) {
-			if(msg.channel.type === 'dm' || msg.deleted) return;
-			msg.delete().catch(()=>{});
-			if(!this.recentInfectedWarnings.includes(msg.author.id)){
-				this.recentInfectedWarnings.push(msg.author.id);
-				msg.channel.send(`<@${msg.author.id}> was infected by a malware that tried to spread itself in this guild`);
+		const url = msg.content.match(/^(?:https?:\/\/)?([^:/\n?=]+)/)
+		url.forEach(url => {
+			if (doesMessageContain(url, this.scamLinks)) {
+				if(msg.channel.type === 'dm' || msg.deleted) return;
+				msg.delete().catch(()=>{});
+				if(!this.recentInfectedWarnings.includes(msg.author.id)){
+					this.recentInfectedWarnings.push(msg.author.id);
+					msg.channel.send(`<@${msg.author.id}> was infected by a malware that tried to spread itself in this guild`);
+				}
+				return;
 			}
-			return;
-		}
+		});
 	}
 }
 

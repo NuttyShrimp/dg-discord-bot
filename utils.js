@@ -25,7 +25,7 @@ const createMsgEmbed = (title, msg, author, authorimg, msgImage) => {
 
 const doesMessageContain = (message='', dict=[]) => {
 	const lowerMsg = message.toLowerCase();
-	return !!dict.find(w => lowerMsg.includes(w));
+	return !!dict.find(w => lowerMsg === w.toLowerCase());
 }
 
 module.exports = {
