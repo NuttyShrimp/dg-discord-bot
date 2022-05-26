@@ -20,12 +20,6 @@ deploy:bot:
 
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - ssh "deploy@$DOCKER_HOST_IP"
-    - cd degrensbot
-    - git reset --hard
-    - git fetch
-    - git pull --rebase
-    - docker compose down
-    - docker compose up -d --build
+    - ssh "deploy@$DOCKER_HOST_IP" 'bash -s' < deploy/deploy-bot.sh
   only:
     - master
