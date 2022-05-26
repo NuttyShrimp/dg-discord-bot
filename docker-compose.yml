@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: lscr.io/linuxserver/mariadb:alpine
+    restart: always
+    volumes:
+      - db-data:/config
+    environment:
+      MYSQL_ROOT_PASSWORD: 'To##Bu^?pQE2hrZw*KhMHi9qaE5w2vWYz?6wv!oRkE8Ta5jDp7rL&B%TFN#u&TRJ?e#B^Kz?D#A*M*F^3YoM*K7@az@Gi^!GM*!xkZtoJ3PDPEX9uC2^jZ5N!C5QYLaU'
+      TZ: Europe/Brussels
+      MYSQL_DATABASE: dg-bot
+      MYSQL_USER: dg-bot
+      MYSQL_PASSWORD: "f5JXoR?k!vntmKrpTG#tazjywbFyAf957TuMbpWAc4cTJi%GtCT9&EXgyHD!!ZTm"
+  
+  bot:
+    build: .
+    env_file: .env
+    depends_on:
+      - mariadb
+    environment:
+      MARIADB_DATABASE: dg-bot
+      MARIADB_HOST: mariadb
+      MARIADB_PORT: 3306
+      MARIADB_USER: dg-bot
+      MARIADB_PASSWORD: "f5JXoR?k!vntmKrpTG#tazjywbFyAf957TuMbpWAc4cTJi%GtCT9&EXgyHD!!ZTm"
+
+volumes:
+  db-data:
+
+networks:
+  default:
+    name: dg-discord-bot-network

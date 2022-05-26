@@ -1,18 +1,16 @@
-image: node:latest
-
-before_script:
-    - apt-get update -qy
-    - apt-get install -y ruby-dev
-    - gem install dpl
-
 stages:
-    - production
+  - deploy
 
-production:
-    type: deploy
-    stage: production
-    image: ruby:latest
-    script:
-        - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
-    only:
-        - master
+deploy:bot:
+  image: kroniak/ssh-client
+  stage: deploy
+  before_script:
+    - eval $(ssh-agent -s)
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+  script:
+    - ssh "deploy@$DOCKER_HOST_IP" "cd degrensbot && git fetch && git pull && docker-compose down && docker-compose up -d --build"
+  only:
+    - master
