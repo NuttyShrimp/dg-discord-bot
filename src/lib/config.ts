@@ -2,7 +2,6 @@ export const config: Record<keyof Omit<NodeJS.ProcessEnv, 'TZ'>, string> = {
   BOT_TOKEN: process.env.BOT_TOKEN || "",
   APPLICATION_ID: process.env.APPLICATION_ID || "",
   GUILD_ID: process.env.GUILD_ID || "",
-  CLIENT_SECRET: process.env.CLIENT_SECRET || '',
   // Message log channel
   MESSAGELOGCHANNEL: process.env.MESSAGELOGCHANNEL || "",
   // React-role module

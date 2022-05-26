@@ -4,7 +4,6 @@ declare global {
       BOT_TOKEN: string;
       APPLICATION_ID: string;
       GUILD_ID: string;
-      CLIENT_SECRET: string;
       // Message log channel
       MESSAGELOGCHANNEL: string;
       // React-role module
