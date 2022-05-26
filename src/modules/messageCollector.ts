@@ -37,6 +37,13 @@ export class MessageCollector extends Module implements BotModule {
     if (msg.channel.id !== process.env.BUG_SEND_CHANNEL) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag
+    try {
+      msg.member.send({
+        content: `We hebben je bug report goed ontvangen!\nHieronder staat een kopie van je bericht (zonder attachments)\n\n${msg.content}`,
+      })
+    } catch (e) {
+      // We do not care about this failing
+    }
     const embed = createMsgEmbed('Bug Report', msg.content, author, msg.author.displayAvatarURL(), photoURL)
     this.bugReportChannel?.send(embed).then(null).catch(console.error);
     return msg.delete();
