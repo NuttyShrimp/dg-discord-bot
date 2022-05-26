@@ -9,9 +9,15 @@ deploy:bot:
   before_script:
     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
     - eval $(ssh-agent -s)
+
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
-    - echo "$SSH_PRIVATE_KEY\n" | tr -d '\r' | ssh-add -
+
+    - ssh-keyscan "$DOCKER_HOST_IP" >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
     - ssh "deploy@$DOCKER_HOST_IP" "cd degrensbot && git fetch && git pull && docker-compose down && docker-compose up -d --build"
