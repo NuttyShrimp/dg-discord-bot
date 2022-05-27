@@ -18,6 +18,7 @@ export class PlayerCount extends Module implements BotModule {
       const rawRes = await fetch(`${URL_SERVER}/info.json`, FETCH_OPS);
       if (!rawRes.ok) {
         console.error(`Failed to fetch player count: ${rawRes.status} ${rawRes.statusText}`);
+        return;
       }
       const res = await rawRes.json() as ServerInformation;
       this.activePlayers = parseInt(res.vars?.sv_queueConnectedCount ?? 0);
