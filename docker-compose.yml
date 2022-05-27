@@ -16,6 +16,7 @@ services:
   bot:
     build: .
     env_file: .env
+    restart: always
     depends_on:
       - mariadb
     environment:
