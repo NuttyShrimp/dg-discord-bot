@@ -22,11 +22,25 @@ export class PlayerCount extends Module implements BotModule {
       const res = await rawRes.json() as ServerInformation;
       this.activePlayers = parseInt(res.vars?.sv_queueConnectedCount ?? 0);
       this.queuedPlayers = parseInt(res.vars?.sv_queueCount ?? 0);
-      this.bot.user?.setActivity(`${this.activePlayers}(${this.queuedPlayers}) spelers`, {type: 'WATCHING'});
-      this.bot.user?.setStatus('online');
+      this.bot.user?.setPresence({
+        status: 'online',
+        activities: [
+          {
+            type: 'WATCHING',
+            name: `${this.activePlayers}(${this.queuedPlayers}) spelers`
+          }
+        ]
+      })
     } catch (e) {
-      this.bot.user?.setActivity('OFFLINE', {type: 'WATCHING'});
-      this.bot.user?.setStatus('dnd');
+      this.bot.user?.setPresence({
+        status: 'dnd',
+        activities: [
+          {
+            type: 'PLAYING',
+            name: `OFFLINE`
+          }
+        ]
+      })
       console.error(e);
     }
   }
