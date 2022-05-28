@@ -51,7 +51,7 @@ export class PlayerCount extends Module implements BotModule {
       clearInterval(this.plyFetchInterval);
     }
     this.fetchPlayerCount()
-    this.plyFetchInterval = setInterval(() => this.fetchPlayerCount(), 10000);
+    this.plyFetchInterval = setInterval(() => this.fetchPlayerCount(), 20000);
   }
 
 }
