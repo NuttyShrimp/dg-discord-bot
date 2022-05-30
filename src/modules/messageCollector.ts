@@ -53,7 +53,7 @@ export class MessageCollector extends Module implements BotModule {
     if (msg.channel.id !== process.env.SUGGESTION_CHANNEL) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag
-    const embed = createMsgEmbed('Bug Report', msg.content, author, msg.author.displayAvatarURL(), photoURL)
+    const embed = createMsgEmbed('Suggestie', msg.content, author, msg.author.displayAvatarURL(), photoURL)
     try {
       const embedMsg = await this.suggestionsChannel?.send(embed)
       if (embedMsg) {
