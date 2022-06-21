@@ -4,7 +4,20 @@ import {deployCommands} from "./lib/classes/SlashCommands";
 import {checkConfig, config} from "./lib/config";
 import {bot, botCommands, botModules} from "./lib/botInfo";
 import {AppDataSource} from "./db/source";
+import * as Sentry from '@sentry/node'
+import * as Tracing from '@sentry/tracing';
 import './lib/botEvents';
+import { RewriteFrames } from '@sentry/integrations';
+
+Sentry.init({
+  dsn: "https://e956f2798bfc4b7d89f14f6e0880eb2e@sentry.nuttyshrimp.me/13",
+  tracesSampleRate: 1.0,
+  integrations: [
+    new RewriteFrames({
+      root: global.__dirname,
+    }),
+  ],
+});
 
 checkConfig();
 
