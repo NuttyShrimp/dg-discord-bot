@@ -32,13 +32,15 @@ export class PlayerCount extends Module implements BotModule {
           }
         ]
       })
-    } catch (e) {
+    } catch (e: any) {
+      // Just ignore these random errors
+      if (e.code === 'ECONNRESET') return;
       this.bot.user?.setPresence({
         status: 'dnd',
         activities: [
           {
             type: 'PLAYING',
-            name: `OFFLINE`
+            name: 'OFFLINE'
           }
         ]
       })
