@@ -51,6 +51,7 @@ export class MessageCollector extends Module implements BotModule {
 
   private async handleSuggestion(msg: FilteredMessage) {
     if (msg.channel.id !== process.env.SUGGESTION_CHANNEL) return;
+    if (msg.type.startsWith('THREAD')) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag
     const embed = createMsgEmbed('Suggestie', msg.content, author, msg.author.displayAvatarURL(), photoURL)
