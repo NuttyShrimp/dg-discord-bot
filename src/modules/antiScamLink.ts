@@ -1,7 +1,7 @@
-import {BotModule, FilteredMessage, Module} from "../lib/classes/AbstractModule";
-import {Client} from "discord.js";
+import {BotModule, FilteredMessage, Module} from '../lib/classes/AbstractModule';
+import {Client} from 'discord.js';
 import {doesMessageContain} from '../lib/utils'
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
 export class AntiScamLinks extends Module implements BotModule {
   scamLinks: string[] = [];
@@ -13,9 +13,9 @@ export class AntiScamLinks extends Module implements BotModule {
   }
 
   async fetchList() {
-    let link = 'https://raw.githubusercontent.com/DevSpen/links/master/src/links.txt';
-    let response = await fetch(link);
-    let text = await response.text();
+    const link = 'https://raw.githubusercontent.com/DevSpen/links/master/src/links.txt';
+    const response = await fetch(link);
+    const text = await response.text();
     this.scamLinks = text.split('\n');
     console.log(`Loaded ${this.scamLinks.length} scam links`);
   }
@@ -23,7 +23,7 @@ export class AntiScamLinks extends Module implements BotModule {
   async onMessage(msg: FilteredMessage) {
     if (msg.author.bot) return;
     // get all URL in msg.content
-    let urls = msg.content.match(/(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    const urls = msg.content.match(/(https?:\/\/)(www\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*)/g);
     urls?.forEach(url => {
       // Remove http(s)://
       url = url.replace(/^https?:\/\//, '');

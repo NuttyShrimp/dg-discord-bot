@@ -1,11 +1,11 @@
-import {Client, CommandInteraction, MessageEmbed} from "discord.js";
-import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {roleIds} from "../constants";
+import {Client, CommandInteraction, MessageEmbed} from 'discord.js';
+import SlashCommand, {BotCommand} from '../lib/classes/SlashCommands';
+import {roleIds} from '../constants';
 
 export class BotStat extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
     super('stats', bot, {
-      description: "Check them statistics of the bot",
+      description: 'Check them statistics of the bot',
       roles: [roleIds.dev]
     });
   }

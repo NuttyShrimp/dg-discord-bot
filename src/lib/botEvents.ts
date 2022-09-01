@@ -1,6 +1,6 @@
-import {bot, botCommands, botModules} from "./botInfo";
-import {ClientEvents, Interaction, Message, PartialMessage} from "discord.js";
-import {FilteredMessage} from "./classes/AbstractModule";
+import {bot, botCommands, botModules} from './botInfo';
+import {ClientEvents, Interaction, Message, PartialMessage} from 'discord.js';
+import {FilteredMessage} from './classes/AbstractModule';
 
 const dispatchEvent = <T extends keyof ClientEvents>(event: T, ...args: ClientEvents[T]) => {
   botModules.forEach(bModule => {

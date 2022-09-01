@@ -1,13 +1,13 @@
-import {Module, BotModule} from "../lib/classes/AbstractModule";
-import {Client} from "discord.js";
+import {Module, BotModule} from '../lib/classes/AbstractModule';
+import {Client} from 'discord.js';
 import fetch from 'node-fetch';
-import {FETCH_OPS, URL_SERVER} from "../constants";
+import {FETCH_OPS, URL_SERVER} from '../constants';
 
 
 export class PlayerCount extends Module implements BotModule {
   private plyFetchInterval: NodeJS.Timer | null = null;
-  private activePlayers: number = 0;
-  private queuedPlayers: number = 0;
+  private activePlayers = 0;
+  private queuedPlayers = 0;
 
   constructor(bot: Client) {
     super(bot);

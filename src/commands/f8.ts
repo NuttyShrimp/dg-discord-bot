@@ -1,10 +1,10 @@
-import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction, MessageEmbed} from "discord.js";
+import SlashCommand, {BotCommand} from '../lib/classes/SlashCommands';
+import {Client, CommandInteraction} from 'discord.js';
 
 export class F8 extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
     super('f8', bot, {
-      description: "Check hoe je de server kunt joinen",
+      description: 'Check hoe je de server kunt joinen',
       roles: []
     });
   }

@@ -1,7 +1,7 @@
-import {BotModule, FilteredMessage, Module} from "../lib/classes/AbstractModule";
-import {Client, ClientEvents, Interaction, Message} from "discord.js";
-import {AppDataSource} from "../db/source";
-import {StickyMessage} from "../db/entities/StickyMessage";
+import {BotModule, FilteredMessage, Module} from '../lib/classes/AbstractModule';
+import {Client, ClientEvents, Message} from 'discord.js';
+import {AppDataSource} from '../db/source';
+import {StickyMessage} from '../db/entities/StickyMessage';
 
 export class StickyMessages extends Module implements BotModule {
   private static instance: StickyMessages;
@@ -42,7 +42,7 @@ export class StickyMessages extends Module implements BotModule {
     } catch (e: any) {
       // We do not care about Unkwown message
       if (e.message === 'Unknown Message') return;
-      console.error("Error while trying to remove sticky", e);
+      console.error('Error while trying to remove sticky', e);
     }
   }
   

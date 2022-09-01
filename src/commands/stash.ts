@@ -1,10 +1,10 @@
-import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction, MessageEmbed} from "discord.js";
+import SlashCommand, {BotCommand} from '../lib/classes/SlashCommands';
+import {Client, CommandInteraction} from 'discord.js';
 
 export class Stash extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
     super('stash', bot, {
-      description: "Problemen met je stash? Check hier wat je moet doen!",
+      description: 'Problemen met je stash? Check hier wat je moet doen!',
       roles: []
     });
   }

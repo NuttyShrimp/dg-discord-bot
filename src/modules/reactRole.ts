@@ -1,5 +1,5 @@
-import {BotModule, Module} from "../lib/classes/AbstractModule";
-import {Client, GuildMember, Message, MessageReaction, ReactionCollector, Role, TextChannel, User} from "discord.js";
+import {BotModule, Module} from '../lib/classes/AbstractModule';
+import {Client, GuildMember, Message, MessageReaction, ReactionCollector, Role, TextChannel, User} from 'discord.js';
 
 export class ReactRole extends Module implements BotModule {
   private channel: TextChannel | null;
@@ -50,7 +50,7 @@ export class ReactRole extends Module implements BotModule {
       filter: this.reactionFilter.bind(this),
     });
     if (!this.collector) {
-      throw new Error(`Failed to create reaction collector for react role msg`)
+      throw new Error('Failed to create reaction collector for react role msg')
     }
     this.collector?.on('collect', async (_, u) => {
       const guildMember = await this.getUser(u)

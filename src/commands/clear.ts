@@ -1,12 +1,12 @@
-import SlashCommand, {BotCommand, rest} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction, MessageEmbed} from "discord.js";
-import {roleIds} from "../constants";
-import {Routes} from "discord-api-types/v10";
+import SlashCommand, {BotCommand, rest} from '../lib/classes/SlashCommands';
+import {Client, CommandInteraction} from 'discord.js';
+import {roleIds} from '../constants';
+import {Routes} from 'discord-api-types/v10';
 
 export class Clear extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
     super('clear', bot, {
-      description: "Clear a certain amount of messages",
+      description: 'Clear a certain amount of messages',
       roles: [roleIds.staff, roleIds.dev],
       options: [
         {
@@ -25,7 +25,7 @@ export class Clear extends SlashCommand implements BotCommand {
     if (!interaction.member) return;
     let amount = interaction.options.getInteger('amount');
     if (!amount) {
-      interaction.reply({content: `You need to specify a number of messages to delete!`, ephemeral: true});
+      interaction.reply({content: 'You need to specify a number of messages to delete!', ephemeral: true});
       return;
     }
     if (amount > 100) {

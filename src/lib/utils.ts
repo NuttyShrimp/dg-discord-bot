@@ -1,6 +1,5 @@
-import {Message, MessageEmbed} from "discord.js";
+import {Message, MessageEmbed} from 'discord.js';
 
-const Discord = require('discord.js');
 const path = require('path');
 
 export const parseAttachments = (message: Message) => {
@@ -15,7 +14,7 @@ export const parseAttachments = (message: Message) => {
 }
 
 export const createMsgEmbed = (title: string, msg: string, author: string, authorimg: string, msgImage?: string) => {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setAuthor({
       name: author,
       iconURL: authorimg

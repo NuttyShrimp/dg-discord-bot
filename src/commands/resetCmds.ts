@@ -1,12 +1,12 @@
-import SlashCommand, {BotCommand, deployCommands} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction} from "discord.js";
-import {roleIds} from "../constants";
-import {botCommands} from "../lib/botInfo";
+import SlashCommand, {BotCommand, deployCommands} from '../lib/classes/SlashCommands';
+import {Client, CommandInteraction} from 'discord.js';
+import {roleIds} from '../constants';
+import {botCommands} from '../lib/botInfo';
 
 export class ResetCmds extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
     super('refreshcmds', bot, {
-      description: "Reset them slash commands, do not touch if you are not nuttyshrimp",
+      description: 'Reset them slash commands, do not touch if you are not nuttyshrimp',
       roles: [roleIds.dev]
     });
   }
@@ -18,7 +18,7 @@ export class ResetCmds extends SlashCommand implements BotCommand {
     await deployCommands([]);
     await deployCommands(botCommands);
     interaction.reply({
-      content: `SlashCommands should be refreshed`,
+      content: 'SlashCommands should be refreshed',
       ephemeral: true,
     })
   }

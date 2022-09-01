@@ -1,6 +1,6 @@
-import {Module, BotModule, FilteredMessage} from "../lib/classes/AbstractModule";
-import {Client, Interaction, Message, MessageEmbed, MessageEmbedAuthor, TextChannel, User} from "discord.js";
-import {createMsgEmbed, parseAttachments} from "../lib/utils";
+import {Module, BotModule, FilteredMessage} from '../lib/classes/AbstractModule';
+import {Client, Interaction, MessageEmbed, TextChannel, User} from 'discord.js';
+import {createMsgEmbed, parseAttachments} from '../lib/utils';
 
 export class MessageCollector extends Module implements BotModule {
   private suggestionsChannel: TextChannel | null;
@@ -17,9 +17,9 @@ export class MessageCollector extends Module implements BotModule {
 
   start() {
     Object.entries({
-      [process.env.SUGGESTION_CHANNEL]: "suggestionsChannel",
-      [process.env.BUG_RECEIVE_CHANNEL]: "bugReportChannel",
-      [process.env.MESSAGELOGCHANNEL]: "messageLogChannel"
+      [process.env.SUGGESTION_CHANNEL]: 'suggestionsChannel',
+      [process.env.BUG_RECEIVE_CHANNEL]: 'bugReportChannel',
+      [process.env.MESSAGELOGCHANNEL]: 'messageLogChannel'
     }).forEach(([channelId, channel]) => {
       const _channel = this.bot.channels.cache.get(channelId);
       if (!_channel) {
@@ -62,7 +62,7 @@ export class MessageCollector extends Module implements BotModule {
         embedMsg.react('👎')
       }
     } catch (e) {
-      console.error(`Failed to handle suggestion`, e)
+      console.error('Failed to handle suggestion', e)
     } finally {
       msg.delete();
     }
