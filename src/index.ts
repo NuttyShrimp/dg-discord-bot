@@ -7,6 +7,7 @@ import {AppDataSource} from './db/source';
 import * as Sentry from '@sentry/node'
 import './lib/botEvents';
 import { RewriteFrames } from '@sentry/integrations';
+import { patreonRoles } from './modules/patreonRoles';
 
 Sentry.init({
   dsn: 'https://e956f2798bfc4b7d89f14f6e0880eb2e@sentry.nuttyshrimp.me/13',
@@ -34,4 +35,5 @@ bot.on('ready', function () {
     }
   });
   console.log(`Started ${botModules.length} modules`);
+  patreonRoles.initialize();
 });
