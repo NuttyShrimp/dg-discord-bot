@@ -17,9 +17,8 @@ export class ResetCmds extends SlashCommand implements BotCommand {
     await interaction.deferReply({ephemeral: true});
     await deployCommands([]);
     await deployCommands(botCommands);
-    interaction.reply({
+    interaction.editReply({
       content: 'SlashCommands should be refreshed',
-      ephemeral: true,
     })
   }
 }
