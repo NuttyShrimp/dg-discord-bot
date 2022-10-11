@@ -5,3 +5,4 @@ export { ResetCmds } from './resetCmds';
 export { Stash } from './stash';
 export { Sticky } from './sticky';
 export { Clear } from './clear';
+export { AddMember, AddIntaker, AddIntakerTrainee } from './addRoles';
