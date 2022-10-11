@@ -1,9 +1,9 @@
-import {DataSource} from 'typeorm';
-import {config} from '../lib/config';
-import {StickyMessage} from './entities/StickyMessage';
+import {DataSource} from "typeorm";
+import {config} from "../lib/config";
+import {StickyMessage} from "./entities/StickyMessage";
 
 export const AppDataSource = new DataSource({
-  type: 'mariadb',
+  type: "mariadb",
   host: config.MARIADB_HOST,
   port: Number(config.MARIADB_PORT),
   username: config.MARIADB_USER,
@@ -12,4 +12,4 @@ export const AppDataSource = new DataSource({
   entities: [StickyMessage],
   synchronize: true,
   logging: false,
-})
+});

@@ -1,7 +1,7 @@
-import {BotModule, FilteredMessage, Module} from '../lib/classes/AbstractModule';
-import {Client, ClientEvents, Message} from 'discord.js';
-import {AppDataSource} from '../db/source';
-import {StickyMessage} from '../db/entities/StickyMessage';
+import {BotModule, FilteredMessage, Module} from "../lib/classes/AbstractModule";
+import {Client, ClientEvents, Message} from "discord.js";
+import {AppDataSource} from "../db/source";
+import {StickyMessage} from "../db/entities/StickyMessage";
 
 export class StickyMessages extends Module implements BotModule {
   private static instance: StickyMessages;
@@ -16,9 +16,9 @@ export class StickyMessages extends Module implements BotModule {
   private stickyChannelMap: Map<string, {
     message: string,
     messageId: string,
-  }>
+  }>;
   
-  private messageDeleteByBot: Set<string>
+  private messageDeleteByBot: Set<string>;
   
   constructor(bot: Client) {
     super(bot);
@@ -31,18 +31,18 @@ export class StickyMessages extends Module implements BotModule {
       const sticky = this.stickyChannelMap.get(channelId);
       if (!sticky) return;
       // Get channel from discord
-      const channel = await this.bot.channels.fetch(channelId)
+      const channel = await this.bot.channels.fetch(channelId);
       if (!channel) return;
       if (!channel.isText()) return;
       // Delete message
-      const sMessage = await channel.messages.fetch(sticky.messageId)
+      const sMessage = await channel.messages.fetch(sticky.messageId);
       if (!sMessage) return;
       this.messageDeleteByBot.add(sMessage.id);
       await sMessage.delete();
     } catch (e: any) {
       // We do not care about Unkwown message
-      if (e.message === 'Unknown Message') return;
-      console.error('Error while trying to remove sticky', e);
+      if (e.message === "Unknown Message") return;
+      console.error("Error while trying to remove sticky", e);
     }
   }
   
@@ -51,7 +51,7 @@ export class StickyMessages extends Module implements BotModule {
     if (!sticky) return;
     
     // Create new sticky
-    const channel = await this.bot.channels.fetch(channelId)
+    const channel = await this.bot.channels.fetch(channelId);
     if (!channel) return;
     if (!channel.isText()) return;
     
@@ -81,7 +81,7 @@ export class StickyMessages extends Module implements BotModule {
   
   async createNewStick(channelId: string, message: string) {
     await this.tryToRemoveSticky(channelId);
-    const channel = await this.bot.channels.fetch(channelId)
+    const channel = await this.bot.channels.fetch(channelId);
     if (!channel) return;
     if (!channel.isText()) return;
     const sMessage = await channel.send(message);
@@ -110,13 +110,13 @@ export class StickyMessages extends Module implements BotModule {
   }
   
   async start() {
-    const DBMessages = await AppDataSource.manager.find(StickyMessage)
+    const DBMessages = await AppDataSource.manager.find(StickyMessage);
     DBMessages.forEach(message => {
       this.stickyChannelMap.set(message.channelId, {
         message: message.message,
         messageId: message.messageId,
       });
-    })
+    });
     this.stickyChannelMap.forEach((sticky, channelId) => {
       this.updateSticky(channelId);
     });
@@ -130,15 +130,15 @@ export class StickyMessages extends Module implements BotModule {
   
   async onEvent<T extends keyof ClientEvents>(event:T , ...args: ClientEvents[T]) {
     switch (event) {
-      case 'messageDelete': {
-        const message = args[0] as Message;
-        const sticky = this.stickyChannelMap.get(message.channel.id);
-        if (!sticky) return;
-        if (sticky.messageId === message.id && !this.messageDeleteByBot.has(message.id)) {
-          // Readd sticky, if it was deleted
-          this.updateSticky(message.channel.id);
-        }
+    case "messageDelete": {
+      const message = args[0] as Message;
+      const sticky = this.stickyChannelMap.get(message.channel.id);
+      if (!sticky) return;
+      if (sticky.messageId === message.id && !this.messageDeleteByBot.has(message.id)) {
+        // Readd sticky, if it was deleted
+        this.updateSticky(message.channel.id);
       }
+    }
     }
   }
 }

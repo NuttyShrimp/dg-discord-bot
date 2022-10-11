@@ -1,6 +1,6 @@
-import {Module, BotModule, FilteredMessage} from '../lib/classes/AbstractModule';
-import {Client, Interaction, MessageEmbed, TextChannel, User} from 'discord.js';
-import {createMsgEmbed, parseAttachments} from '../lib/utils';
+import {Module, BotModule, FilteredMessage} from "../lib/classes/AbstractModule";
+import {Client, Interaction, MessageEmbed, TextChannel, User} from "discord.js";
+import {createMsgEmbed, parseAttachments} from "../lib/utils";
 
 export class MessageCollector extends Module implements BotModule {
   private suggestionsChannel: TextChannel | null;
@@ -17,52 +17,52 @@ export class MessageCollector extends Module implements BotModule {
 
   start() {
     Object.entries({
-      [process.env.SUGGESTION_CHANNEL]: 'suggestionsChannel',
-      [process.env.BUG_RECEIVE_CHANNEL]: 'bugReportChannel',
-      [process.env.MESSAGELOGCHANNEL]: 'messageLogChannel'
+      [process.env.SUGGESTION_CHANNEL]: "suggestionsChannel",
+      [process.env.BUG_RECEIVE_CHANNEL]: "bugReportChannel",
+      [process.env.MESSAGELOGCHANNEL]: "messageLogChannel"
     }).forEach(([channelId, channel]) => {
       const _channel = this.bot.channels.cache.get(channelId);
       if (!_channel) {
-        throw new Error('Suggestion channel not found');
+        throw new Error("Suggestion channel not found");
       }
       if (_channel.partial || !(_channel instanceof TextChannel)) {
-        throw new Error('Suggestion channel must be a text channel');
+        throw new Error("Suggestion channel must be a text channel");
       }
       // @ts-ignore
       this[channel] = _channel;
-    })
+    });
   }
 
   private handleBugReport(msg: FilteredMessage) {
     if (msg.channel.id !== process.env.BUG_SEND_CHANNEL) return;
     const photoURL = parseAttachments(msg);
-    const author = msg.member.nickname ? msg.member.nickname : msg.author.tag
+    const author = msg.member.nickname ? msg.member.nickname : msg.author.tag;
     try {
       msg.member.send({
         content: `We hebben je bug report goed ontvangen!\nHieronder staat een kopie van je bericht (zonder attachments)\n\n${msg.content}`,
-      })
+      });
     } catch (e) {
       // We do not care about this failing
     }
-    const embed = createMsgEmbed('Bug Report', msg.content, author, msg.author.displayAvatarURL(), photoURL)
+    const embed = createMsgEmbed("Bug Report", msg.content, author, msg.author.displayAvatarURL(), photoURL);
     this.bugReportChannel?.send(embed).then(null).catch(console.error);
     return msg.delete();
   }
 
   private async handleSuggestion(msg: FilteredMessage) {
     if (msg.channel.id !== process.env.SUGGESTION_CHANNEL) return;
-    if (msg.type.startsWith('THREAD')) return;
+    if (msg.type.startsWith("THREAD")) return;
     const photoURL = parseAttachments(msg);
-    const author = msg.member.nickname ? msg.member.nickname : msg.author.tag
-    const embed = createMsgEmbed('Suggestie', msg.content, author, msg.author.displayAvatarURL(), photoURL)
+    const author = msg.member.nickname ? msg.member.nickname : msg.author.tag;
+    const embed = createMsgEmbed("Suggestie", msg.content, author, msg.author.displayAvatarURL(), photoURL);
     try {
-      const embedMsg = await this.suggestionsChannel?.send(embed)
+      const embedMsg = await this.suggestionsChannel?.send(embed);
       if (embedMsg) {
-        embedMsg.react('👍')
-        embedMsg.react('👎')
+        embedMsg.react("👍");
+        embedMsg.react("👎");
       }
     } catch (e) {
-      console.error('Failed to handle suggestion', e)
+      console.error("Failed to handle suggestion", e);
     } finally {
       msg.delete();
     }
@@ -76,7 +76,7 @@ export class MessageCollector extends Module implements BotModule {
     this.messageLogChannel?.send({
       embeds: [
         new MessageEmbed()
-          .setColor('#E95578')
+          .setColor("#E95578")
           .setAuthor({
             name: msg.author.tag,
             iconURL: msg.author.displayAvatarURL()
@@ -97,7 +97,7 @@ export class MessageCollector extends Module implements BotModule {
       author: msg.author,
       title: `Message send in #${(msg.channel as TextChannel).id}`,
       content: msg.content
-    })
+    });
   }
 
   onInteraction(interaction: Interaction) {
@@ -107,6 +107,6 @@ export class MessageCollector extends Module implements BotModule {
       title: `Command used in #${(interaction.channel as TextChannel).name}`,
       // I do not know if this includes subcommands
       content: interaction.commandName
-    })
+    });
   }
 }

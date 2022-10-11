@@ -1,17 +1,17 @@
-import {Message, MessageEmbed} from 'discord.js';
+import { Message, MessageEmbed } from "discord.js";
+import path from "path";
 
-const path = require('path');
 
 export const parseAttachments = (message: Message) => {
   if (message.attachments.size > 0) {
     for (const attachment of message.attachments.entries()) {
       const img = attachment[1];
-      if (['.jpg', '.png', '.gif', '.jpeg', '.bmp'].includes(path.extname(img?.name?.toLowerCase()))) {
+      if ([".jpg", ".png", ".gif", ".jpeg", ".bmp"].includes(path.extname(img?.name?.toLowerCase() ?? ""))) {
         return img.url;
       }
     }
   }
-}
+};
 
 export const createMsgEmbed = (title: string, msg: string, author: string, authorimg: string, msgImage?: string) => {
   const embed = new MessageEmbed()
@@ -19,7 +19,7 @@ export const createMsgEmbed = (title: string, msg: string, author: string, autho
       name: author,
       iconURL: authorimg
     })
-    .setColor('#E95578')
+    .setColor("#E95578")
     .setTitle(title)
     .setDescription(msg)
     .setTimestamp(new Date());
@@ -27,9 +27,9 @@ export const createMsgEmbed = (title: string, msg: string, author: string, autho
   return {
     embeds: [embed]
   };
-}
+};
 
-export const doesMessageContain = (message = '', dict: string[] = []) => {
+export const doesMessageContain = (message = "", dict: string[] = []) => {
   const lowerMsg = message.toLowerCase();
   return !!dict.find(w => lowerMsg === w.toLowerCase());
-}
+};

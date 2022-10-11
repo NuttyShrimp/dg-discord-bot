@@ -1,13 +1,13 @@
-import {Column, Entity, PrimaryColumn} from 'typeorm';
+import {Column, Entity, PrimaryColumn} from "typeorm";
 
 @Entity()
 export class StickyMessage {
   @PrimaryColumn()
-  channelId: string
+    channelId: string;
 
   @Column()
-  messageId: string
+    messageId: string;
   
   @Column()
-  message: string
+    message: string;
 }

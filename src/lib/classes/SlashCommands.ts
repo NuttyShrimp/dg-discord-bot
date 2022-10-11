@@ -2,17 +2,17 @@ import {
   CacheType,
   Client,
   CommandInteraction, GuildMemberRoleManager,
-} from 'discord.js';
-import {Module} from './AbstractModule';
+} from "discord.js";
+import {Module} from "./AbstractModule";
 import {
   APIApplicationCommandOption,
   RESTPostAPIApplicationCommandsJSONBody, Routes,
-} from 'discord-api-types/v10';
-import {config} from '../config';
-import {APIApplicationCommand} from 'discord-api-types/payloads/v10';
-import {REST} from '@discordjs/rest';
+} from "discord-api-types/v10";
+import {config} from "../config";
+import {APIApplicationCommand} from "discord-api-types/payloads/v10";
+import {REST} from "@discordjs/rest";
 
-export const rest = new REST({version: '10'}).setToken(config.BOT_TOKEN);
+export const rest = new REST({version: "10"}).setToken(config.BOT_TOKEN);
 
 declare interface SlashCommandOptions {
   description?: string;
@@ -49,12 +49,14 @@ export default class SlashCommand extends Module implements BotCommand {
   ) {
     super(client);
     this.name = name;
-    this.description = options.description ?? '';
+    this.description = options.description ?? "";
     this.options = options.options ?? [];
     this.roles = options.roles ?? [];
     this.aliases = options.aliases ?? [];
   }
-  handleCmd(intercation: CommandInteraction<CacheType>) {}
+  handleCmd(interaction: CommandInteraction<CacheType>) {
+    // empty
+  }
 
   toJSON(): RESTPostAPIApplicationCommandsJSONBody {
     return {
@@ -70,7 +72,7 @@ export default class SlashCommand extends Module implements BotCommand {
     if (this.roles.length === 0) return true;
     if(!(interaction.member.roles as GuildMemberRoleManager).cache.some(role => this.roles.includes(role.id))) {
       interaction.reply({
-        content: 'You don\'t have the required role to run this command',
+        content: "You don't have the required role to run this command",
         ephemeral: true,
       });
       return false;
@@ -86,7 +88,7 @@ export const deployCommands = async (botCommands: BotCommand[]) => {
 
     const cmdsToDelete = registerGuildCmds.filter(cmd => {
       return !botCommands.find(botCmd => botCmd.name === cmd.name || botCmd.aliases.includes(cmd.name));
-    })
+    });
     const cmdsToAdd: RESTPostAPIApplicationCommandsJSONBody[] = [];
     for (const botCmd of botCommands) {
       const cmdJson = botCmd.toJSON();
@@ -95,10 +97,10 @@ export const deployCommands = async (botCommands: BotCommand[]) => {
       }
       if (botCmd.aliases) {
         botCmd.aliases.forEach(alias => {
-          if (registerGuildCmds.find(cmd => cmd.name === alias)) return
+          if (registerGuildCmds.find(cmd => cmd.name === alias)) return;
           cmdJson.name = alias;
-          cmdsToAdd.push({...cmdJson})
-        })
+          cmdsToAdd.push({...cmdJson});
+        });
       }
     }
 
@@ -108,13 +110,13 @@ export const deployCommands = async (botCommands: BotCommand[]) => {
     for (const cmd of registerAppCmds) {
       await rest.delete(Routes.applicationCommand(config.APPLICATION_ID, cmd.id));
     }
-    console.log(`Deleted ${cmdsToDelete.length + registerAppCmds.length} commands`)
+    console.log(`Deleted ${cmdsToDelete.length + registerAppCmds.length} commands`);
 
     for (const cmd of cmdsToAdd) {
       await rest.post(Routes.applicationGuildCommands(config.APPLICATION_ID, config.GUILD_ID), {body: cmd});
     }
-    console.log(`Added ${cmdsToAdd.length} commands`)
+    console.log(`Added ${cmdsToAdd.length} commands`);
   } catch (e) {
-    console.error('Failed to register slashcommands', e)
+    console.error("Failed to register slashcommands", e);
   }
-}
+};

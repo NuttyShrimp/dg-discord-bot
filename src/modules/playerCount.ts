@@ -1,7 +1,7 @@
-import {Module, BotModule} from '../lib/classes/AbstractModule';
-import {Client} from 'discord.js';
-import fetch from 'node-fetch';
-import {FETCH_OPS, URL_SERVER} from '../constants';
+import {Module, BotModule} from "../lib/classes/AbstractModule";
+import {Client} from "discord.js";
+import fetch from "node-fetch";
+import {FETCH_OPS, URL_SERVER} from "../constants";
 
 
 export class PlayerCount extends Module implements BotModule {
@@ -24,26 +24,26 @@ export class PlayerCount extends Module implements BotModule {
       this.activePlayers = parseInt(res.vars?.sv_queueConnectedCount ?? 0);
       this.queuedPlayers = parseInt(res.vars?.sv_queueCount ?? 0);
       this.bot.user?.setPresence({
-        status: 'online',
+        status: "online",
         activities: [
           {
-            type: 'WATCHING',
+            type: "WATCHING",
             name: `${this.activePlayers}(${this.queuedPlayers}) spelers`
           }
         ]
-      })
+      });
     } catch (e: any) {
       // Just ignore these random errors
-      if (e.code === 'ECONNRESET') return;
+      if (e.code === "ECONNRESET") return;
       this.bot.user?.setPresence({
-        status: 'dnd',
+        status: "dnd",
         activities: [
           {
-            type: 'PLAYING',
-            name: 'OFFLINE'
+            type: "PLAYING",
+            name: "OFFLINE"
           }
         ]
-      })
+      });
       console.error(e);
     }
   }
@@ -52,7 +52,7 @@ export class PlayerCount extends Module implements BotModule {
     if (this.plyFetchInterval) {
       clearInterval(this.plyFetchInterval);
     }
-    this.fetchPlayerCount()
+    this.fetchPlayerCount();
     this.plyFetchInterval = setInterval(() => this.fetchPlayerCount(), 20000);
   }
 

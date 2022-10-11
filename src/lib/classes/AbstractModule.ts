@@ -1,4 +1,4 @@
-import {Client, ClientEvents, GuildMember, Interaction, Message} from 'discord.js';
+import {Client, ClientEvents, GuildMember, Interaction, Message} from "discord.js";
 
 export type FilteredMessage = Message & {
   readonly member: GuildMember;

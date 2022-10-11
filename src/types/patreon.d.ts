@@ -14,7 +14,7 @@ declare namespace Patreon {
       discord_role_ids: string[];
     },
     id: number,
-    type: 'reward'
+    type: "reward"
   }
 
   type User = {
@@ -27,7 +27,7 @@ declare namespace Patreon {
       },
     },
     id: number,
-    type: 'user'
+    type: "user"
   }
 
   type Pledge = {
@@ -39,17 +39,17 @@ declare namespace Patreon {
       patron: {
         data: {
           id: number,
-          type: 'user'
+          type: "user"
         },
       },
       reward: {
         data: {
           id: number,
-          type: 'reward'
+          type: "reward"
         },
       }
     },
-    type: 'pledge'
+    type: "pledge"
   }
 
 }

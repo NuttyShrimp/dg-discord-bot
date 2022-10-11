@@ -1,11 +1,11 @@
-import {Client, CommandInteraction, MessageEmbed} from 'discord.js';
-import SlashCommand, {BotCommand} from '../lib/classes/SlashCommands';
-import {roleIds} from '../constants';
+import {Client, CommandInteraction, MessageEmbed} from "discord.js";
+import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
+import {roleIds} from "../constants";
 
 export class BotStat extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
-    super('stats', bot, {
-      description: 'Check them statistics of the bot',
+    super("stats", bot, {
+      description: "Check them statistics of the bot",
       roles: [roleIds.dev]
     });
   }
@@ -21,8 +21,8 @@ export class BotStat extends SlashCommand implements BotCommand {
 
   private createEmbed() {
     const embed = new MessageEmbed({
-      color: '#E95578',
-      title: 'Discord bot stats'
+      color: "#E95578",
+      title: "Discord bot stats"
     });
     const stats = this.getStats();
     const fields = Object.entries(stats).map(stat => {
@@ -39,8 +39,8 @@ export class BotStat extends SlashCommand implements BotCommand {
   private getStats() {
     const used = process.memoryUsage();
     return {
-      'heap Total': this.math(used.heapTotal),
-      'heap Used': this.math(used.heapUsed),
+      "heap Total": this.math(used.heapTotal),
+      "heap Used": this.math(used.heapUsed),
     };
   }
 

@@ -17,8 +17,8 @@ export class AddRoleCmd extends SlashCommand implements BotCommand {
       options: [
         {
           type: ApplicationCommandOptionType.User,
-          name: 'target',
-          description: 'Wie moet er diene rol hebben?',
+          name: "target",
+          description: "Wie moet er diene rol hebben?",
           required: true,
         }
       ]
@@ -29,7 +29,7 @@ export class AddRoleCmd extends SlashCommand implements BotCommand {
   }
 
   private async getLogChannel() {
-    const channel = await this.bot.channels.fetch(logChannels.roleChanges)
+    const channel = await this.bot.channels.fetch(logChannels.roleChanges);
     if (!channel || !channel.isText() || (channel.isText() && channel.isThread()) || channel.partial) return;
     this.logChannel = channel;
   }
@@ -43,21 +43,21 @@ export class AddRoleCmd extends SlashCommand implements BotCommand {
         title: `${this.roleName} assignment`,
         description: `<@${sender.id}>(${sender.user.username}) heeft <@${target.id}>(${target.user.username}) de ${this.roleName} role gegeven`,
         timestamp: new Date().toISOString(),
-      }
-      this.logChannel.send({ embeds: [logEmbed] })
+      };
+      this.logChannel.send({ embeds: [logEmbed] });
     }
   }
 
   handleCmd(interaction: CommandInteraction<CacheType>) {
     if (!interaction.member) return;
 
-    const target = interaction.options.getMember('target') as GuildMember;
+    const target = interaction.options.getMember("target") as GuildMember;
     if (!target) return;
     target.roles.add(this.roleId);
     interaction.reply({
       content: `<@${target.id}> heeft de ${this.roleName} role ontvangen`,
       ephemeral: true
-    })
-    this.sendLog(interaction.member as GuildMember, target)
+    });
+    this.sendLog(interaction.member as GuildMember, target);
   }
 }
