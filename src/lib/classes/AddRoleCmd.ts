@@ -53,6 +53,13 @@ export class AddRoleCmd extends SlashCommand implements BotCommand {
 
     const target = interaction.options.getMember("target") as GuildMember;
     if (!target) return;
+    if (target.roles.cache.some(r => r.id === this.roleId)) {
+      interaction.reply({
+        content: `<@${target.id}> heeft de ${this.roleName} role al!`,
+        ephemeral: true,
+      });
+      return;
+    }
     target.roles.add(this.roleId);
     interaction.reply({
       content: `<@${target.id}> heeft de ${this.roleName} role ontvangen`,
