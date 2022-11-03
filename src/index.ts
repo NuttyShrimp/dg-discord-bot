@@ -15,8 +15,6 @@ Sentry.init({
 
 checkConfig();
 
-deployCommands(botCommands);
-
 AppDataSource.initialize().then(() => {
   bot.login(config.BOT_TOKEN);
 }).catch(console.error);
@@ -31,3 +29,8 @@ bot.on("ready", function () {
   console.log(`Started ${botModules.length} modules`);
   patreonRoles.initialize();
 });
+
+(async () => {
+  deployCommands([]);
+  deployCommands(botCommands);
+})();
