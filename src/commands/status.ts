@@ -1,4 +1,4 @@
-import {Client, CommandInteraction, MessageEmbed} from "discord.js";
+import {Client, CommandInteraction, EmbedBuilder} from "discord.js";
 import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
 import {roleIds} from "../constants";
 
@@ -20,10 +20,9 @@ export class BotStat extends SlashCommand implements BotCommand {
   }
 
   private createEmbed() {
-    const embed = new MessageEmbed({
-      color: "#E95578",
-      title: "Discord bot stats"
-    });
+    const embed = new EmbedBuilder()
+      .setColor("#E95578")
+      .setTitle("Discord bot stats");
     const stats = this.getStats();
     const fields = Object.entries(stats).map(stat => {
       return {

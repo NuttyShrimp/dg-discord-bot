@@ -1,5 +1,5 @@
 import {BotModule, FilteredMessage, Module} from "../lib/classes/AbstractModule";
-import {Client, ClientEvents, Message} from "discord.js";
+import {ChannelType, Client, ClientEvents, Message} from "discord.js";
 import {AppDataSource} from "../db/source";
 import {StickyMessage} from "../db/entities/StickyMessage";
 
@@ -33,7 +33,7 @@ export class StickyMessages extends Module implements BotModule {
       // Get channel from discord
       const channel = await this.bot.channels.fetch(channelId);
       if (!channel) return;
-      if (!channel.isText()) return;
+      if (channel.type !== ChannelType.GuildText) return;
       // Delete message
       const sMessage = await channel.messages.fetch(sticky.messageId);
       if (!sMessage) return;
@@ -53,7 +53,7 @@ export class StickyMessages extends Module implements BotModule {
     // Create new sticky
     const channel = await this.bot.channels.fetch(channelId);
     if (!channel) return;
-    if (!channel.isText()) return;
+    if (channel.type !== ChannelType.GuildText) return;
     
     // Get last message in channel
     const lastMessage = (await channel.messages.fetch({ limit: 1 })).at(0);
@@ -83,7 +83,7 @@ export class StickyMessages extends Module implements BotModule {
     await this.tryToRemoveSticky(channelId);
     const channel = await this.bot.channels.fetch(channelId);
     if (!channel) return;
-    if (!channel.isText()) return;
+    if (channel.type !== ChannelType.GuildText) return;
     const sMessage = await channel.send(message);
     this.stickyChannelMap.set(channelId, {
       message,
@@ -117,7 +117,7 @@ export class StickyMessages extends Module implements BotModule {
         messageId: message.messageId,
       });
     });
-    this.stickyChannelMap.forEach((sticky, channelId) => {
+    this.stickyChannelMap.forEach((_, channelId) => {
       this.updateSticky(channelId);
     });
   }
@@ -128,7 +128,7 @@ export class StickyMessages extends Module implements BotModule {
     this.updateSticky(message.channel.id);
   }
   
-  async onEvent<T extends keyof ClientEvents>(event:T , ...args: ClientEvents[T]) {
+  async onEvent(event:string , ...args: any[]) {
     switch (event) {
     case "messageDelete": {
       const message = args[0] as Message;

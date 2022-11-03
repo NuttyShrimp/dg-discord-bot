@@ -1,5 +1,5 @@
 import SlashCommand, {BotCommand, deployCommands} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction} from "discord.js";
+import {ChatInputCommandInteraction, Client} from "discord.js";
 import {roleIds} from "../constants";
 import {botCommands} from "../lib/botInfo";
 
@@ -11,7 +11,7 @@ export class ResetCmds extends SlashCommand implements BotCommand {
     });
   }
 
-  async handleCmd(interaction: CommandInteraction) {
+  async handleCmd(interaction: ChatInputCommandInteraction) {
     if (!interaction.member) return;
     console.log(`${interaction.user.username} is trying to reset the commands`);
     await interaction.deferReply({ephemeral: true});

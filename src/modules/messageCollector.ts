@@ -1,5 +1,5 @@
 import {Module, BotModule, FilteredMessage} from "../lib/classes/AbstractModule";
-import {Client, Interaction, MessageEmbed, TextChannel, User} from "discord.js";
+import {BaseInteraction, Client, EmbedBuilder, MessageType, TextChannel, User} from "discord.js";
 import {createMsgEmbed, parseAttachments} from "../lib/utils";
 
 export class MessageCollector extends Module implements BotModule {
@@ -51,7 +51,7 @@ export class MessageCollector extends Module implements BotModule {
 
   private async handleSuggestion(msg: FilteredMessage) {
     if (msg.channel.id !== process.env.SUGGESTION_CHANNEL) return;
-    if (msg.type.startsWith("THREAD")) return;
+    if (msg.type === MessageType.ThreadCreated || msg.type === MessageType.ThreadStarterMessage) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag;
     const embed = createMsgEmbed("Suggestie", msg.content, author, msg.author.displayAvatarURL(), photoURL);
@@ -75,7 +75,7 @@ export class MessageCollector extends Module implements BotModule {
   }) {
     this.messageLogChannel?.send({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setColor("#E95578")
           .setAuthor({
             name: msg.author.tag,
@@ -100,7 +100,7 @@ export class MessageCollector extends Module implements BotModule {
     });
   }
 
-  onInteraction(interaction: Interaction) {
+  onInteraction(interaction: BaseInteraction) {
     if (!interaction.isCommand()) return;
     this.logMsg({
       author: interaction.user,

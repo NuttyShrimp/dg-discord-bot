@@ -1,6 +1,5 @@
-import { EmbedBuilder } from "@discordjs/builders";
-import { APIEmbed, ApplicationCommandOptionType } from "discord-api-types/v10";
-import { CacheType, Client, CommandInteraction, DMChannel, GuildMember, MessageEmbed, NewsChannel, TextChannel } from "discord.js";
+import { APIEmbed, ApplicationCommandOptionType, ChannelType } from "discord-api-types/v10";
+import { CacheType, Client, CommandInteraction, DMChannel, GuildMember, NewsChannel, TextChannel } from "discord.js";
 import { logChannels } from "../../constants";
 import SlashCommand, { BotCommand } from "./SlashCommands";
 
@@ -30,7 +29,7 @@ export class AddRoleCmd extends SlashCommand implements BotCommand {
 
   private async getLogChannel() {
     const channel = await this.bot.channels.fetch(logChannels.roleChanges);
-    if (!channel || !channel.isText() || (channel.isText() && channel.isThread()) || channel.partial) return;
+    if (!channel || channel.type !== ChannelType.GuildText || (channel.type === ChannelType.GuildText && channel.isThread()) || channel.partial) return;
     this.logChannel = channel;
   }
 

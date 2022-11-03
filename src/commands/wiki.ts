@@ -1,5 +1,5 @@
 import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction, Message} from "discord.js";
+import {ChatInputCommandInteraction, Client, Message} from "discord.js";
 import {ApplicationCommandOptionType} from "discord-api-types/v10";
 
 export class Wiki extends SlashCommand implements BotCommand {
@@ -20,7 +20,7 @@ export class Wiki extends SlashCommand implements BotCommand {
     });
   }
 
-  async handleCmd(interaction: CommandInteraction) {
+  async handleCmd(interaction: ChatInputCommandInteraction) {
     if (!interaction.member) return;
 
     if (this.lastWikiMsg) {

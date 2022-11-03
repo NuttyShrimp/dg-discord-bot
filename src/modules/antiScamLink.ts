@@ -1,7 +1,7 @@
-import {BotModule, FilteredMessage, Module} from "../lib/classes/AbstractModule";
-import {Client} from "discord.js";
-import {doesMessageContain} from "../lib/utils";
-import fetch from "node-fetch";
+import { BotModule, FilteredMessage, Module } from "../lib/classes/AbstractModule";
+import { Client } from "discord.js";
+import { doesMessageContain } from "../lib/utils";
+import axios from "axios";
 
 export class AntiScamLinks extends Module implements BotModule {
   scamLinks: string[] = [];
@@ -14,9 +14,10 @@ export class AntiScamLinks extends Module implements BotModule {
 
   async fetchList() {
     const link = "https://raw.githubusercontent.com/DevSpen/links/master/src/links.txt";
-    const response = await fetch(link);
-    const text = await response.text();
-    this.scamLinks = text.split("\n");
+    const response = await axios.get(link, {
+      responseType: "text",
+    });
+    this.scamLinks = response.data.split("\n");
     console.log(`Loaded ${this.scamLinks.length} scam links`);
   }
 

@@ -1,5 +1,5 @@
 import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction} from "discord.js";
+import {ChatInputCommandInteraction, Client} from "discord.js";
 import {roleIds} from "../constants";
 import {StickyMessages} from "../modules";
 
@@ -48,7 +48,7 @@ export class Sticky extends SlashCommand implements BotCommand {
     this.stickyMessages = StickyMessages.getInstance(bot);
   }
   
-  private createNewStick(interaction: CommandInteraction) {
+  private createNewStick(interaction: ChatInputCommandInteraction) {
     const targetChannel = interaction.options.getChannel("channel")?.id ?? interaction.channel?.id;
     if (!targetChannel) {
       interaction.editReply({content: "I couldn't find the channel you specified"});
@@ -74,7 +74,7 @@ export class Sticky extends SlashCommand implements BotCommand {
     }
   }
   
-  private async removeSticky(interaction: CommandInteraction) {
+  private async removeSticky(interaction: ChatInputCommandInteraction) {
     const targetChannel = interaction.options.getChannel("channel")?.id ?? interaction.channel?.id;
     if (!targetChannel) {
       interaction.editReply({content: "I couldn't find the channel you specified"});
@@ -85,7 +85,7 @@ export class Sticky extends SlashCommand implements BotCommand {
   }
   
   
-  async handleCmd(interaction: CommandInteraction) {
+  async handleCmd(interaction: ChatInputCommandInteraction) {
     if (!interaction.member) return;
     await interaction.deferReply({ephemeral: true});
     

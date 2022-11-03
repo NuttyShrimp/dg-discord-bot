@@ -1,5 +1,5 @@
 import SlashCommand, {BotCommand, rest} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction} from "discord.js";
+import {ChatInputCommandInteraction, Client, CommandInteraction, Message} from "discord.js";
 import {roleIds} from "../constants";
 import {Routes} from "discord-api-types/v10";
 
@@ -21,7 +21,7 @@ export class Clear extends SlashCommand implements BotCommand {
     });
   }
 
-  handleCmd(interaction: CommandInteraction) {
+  handleCmd(interaction: ChatInputCommandInteraction) {
     if (!interaction.member) return;
     let amount = interaction.options.getInteger("amount");
     if (!amount) {
@@ -35,7 +35,10 @@ export class Clear extends SlashCommand implements BotCommand {
     if (!channel) return;
     // Get all messages
     channel.messages.fetch({limit: amount}).then(messages => {
-      const msgIdsToDelete = messages.map(m => m.id);
+      const msgIdsToDelete: string[] = [];
+      messages.forEach(m => {
+        msgIdsToDelete.push(m.id);
+      });
       // Delete messages
       rest.post(Routes.channelBulkDelete(channel.id), {
         body: {

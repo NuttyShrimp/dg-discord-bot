@@ -1,5 +1,6 @@
 import {
   CacheType,
+  ChatInputCommandInteraction,
   Client,
   CommandInteraction, GuildMemberRoleManager,
 } from "discord.js";
@@ -29,9 +30,9 @@ export interface BotCommand {
   readonly aliases: string[];
 
   // eslint-disable-next-line no-unused-vars
-  handleCmd: (interaction: CommandInteraction) => void;
+  handleCmd: (interaction: ChatInputCommandInteraction) => void;
   // eslint-disable-next-line no-unused-vars
-  canRunCMD: (interaction: CommandInteraction) => boolean;
+  canRunCMD: (interaction: ChatInputCommandInteraction) => boolean;
   toJSON: () => RESTPostAPIApplicationCommandsJSONBody;
 }
 
@@ -66,7 +67,7 @@ export default class SlashCommand extends Module implements BotCommand {
     };
   }
 
-  canRunCMD(interaction: CommandInteraction): boolean {
+  canRunCMD(interaction: ChatInputCommandInteraction): boolean {
     // Check if user has one of the roles
     if (!interaction.member) return false;
     if (this.roles.length === 0) return true;

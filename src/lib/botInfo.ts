@@ -1,10 +1,11 @@
-import {BotModule} from "./classes/AbstractModule";
-import {BotCommand} from "./classes/SlashCommands";
+import { BotModule } from "./classes/AbstractModule";
+import { BotCommand } from "./classes/SlashCommands";
 import * as modules from "../modules";
 import * as cmds from "../commands";
-import Discord, {ClientOptions} from "discord.js";
+import Discord, { ClientOptions, GatewayIntentBits } from "discord.js";
 
-const BOT_CONFIG: ClientOptions = {intents: ["GUILDS", "GUILD_BANS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGES", "DIRECT_MESSAGE_TYPING"]};
+// const BOT_CONFIG: ClientOptions = {intents: ["GUILDS", "GUILD_BANS", "GUILD_MEMBERS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS", "GUILD_MESSAGE_TYPING", "DIRECT_MESSAGES", "DIRECT_MESSAGE_TYPING"]};
+const BOT_CONFIG: ClientOptions = { intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildMessageTyping, GatewayIntentBits.DirectMessages, GatewayIntentBits.DirectMessageTyping] };
 
 export const bot = new Discord.Client(BOT_CONFIG);
 

@@ -1,6 +1,6 @@
 import {Module, BotModule} from "../lib/classes/AbstractModule";
-import {Client} from "discord.js";
-import fetch from "node-fetch";
+import {ActivityType, Client} from "discord.js";
+import axios from "axios";
 import {FETCH_OPS, URL_SERVER} from "../constants";
 
 
@@ -15,19 +15,18 @@ export class PlayerCount extends Module implements BotModule {
 
   private async fetchPlayerCount(): Promise<void> {
     try {
-      const rawRes = await fetch(`${URL_SERVER}/info.json`, FETCH_OPS);
-      if (!rawRes.ok) {
+      const rawRes = await axios.get<ServerInformation>(`${URL_SERVER}/info.json`, FETCH_OPS);
+      if (rawRes.status >= 400) {
         console.error(`Failed to fetch player count: ${rawRes.status} ${rawRes.statusText}`);
         return;
       }
-      const res = await rawRes.json() as ServerInformation;
-      this.activePlayers = parseInt(res.vars?.sv_queueConnectedCount ?? 0);
-      this.queuedPlayers = parseInt(res.vars?.sv_queueCount ?? 0);
+      this.activePlayers = parseInt(rawRes.data.vars?.sv_queueConnectedCount ?? "0");
+      this.queuedPlayers = parseInt(rawRes.data.vars?.sv_queueCount ?? "0");
       this.bot.user?.setPresence({
         status: "online",
         activities: [
           {
-            type: "WATCHING",
+            type: ActivityType.Watching,
             name: `${this.activePlayers}(${this.queuedPlayers}) spelers`
           }
         ]
@@ -39,7 +38,7 @@ export class PlayerCount extends Module implements BotModule {
         status: "dnd",
         activities: [
           {
-            type: "PLAYING",
+            type: ActivityType.Playing,
             name: "OFFLINE"
           }
         ]

@@ -1,8 +1,8 @@
 import {bot, botCommands, botModules} from "./botInfo";
-import {ClientEvents, Interaction, Message, PartialMessage} from "discord.js";
+import {BaseInteraction, ChatInputCommandInteraction, ClientEvents, Interaction, Message, PartialMessage} from "discord.js";
 import {FilteredMessage} from "./classes/AbstractModule";
 
-const dispatchEvent = <T extends keyof ClientEvents>(event: T, ...args: ClientEvents[T]) => {
+const dispatchEvent = (event: string, ...args: any[]) => {
   botModules.forEach(bModule => {
     if (bModule.onEvent) {
       try {
@@ -29,7 +29,7 @@ bot.on("messageCreate", async (message: Message) => {
   });
 });
 
-bot.on("interactionCreate", async (interaction: Interaction) => {
+bot.on("interactionCreate", async (interaction: BaseInteraction) => {
   if (interaction.user.bot) return;
 
   botModules.forEach(bModule => {
@@ -43,13 +43,13 @@ bot.on("interactionCreate", async (interaction: Interaction) => {
   });
   dispatchEvent("interactionCreate", interaction);
 
-  if (!interaction.isCommand()) return;
+  if (!interaction.isChatInputCommand()) return;
   // Only handles commands from this point
   botCommands.forEach(cmd => {
     if (cmd.name !== interaction.commandName && !cmd.aliases.includes(interaction.commandName)) return;
-    if (!cmd.canRunCMD(interaction)) return;
+    if (!cmd.canRunCMD(interaction as ChatInputCommandInteraction)) return;
     try {
-      cmd.handleCmd(interaction);
+      cmd.handleCmd(interaction as ChatInputCommandInteraction);
     } catch (e) {
       console.error(`Error in cmd handler of ${cmd.name} on event interactionCreate (handleCmd)`, e);
     }

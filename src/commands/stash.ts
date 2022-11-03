@@ -1,5 +1,5 @@
 import SlashCommand, {BotCommand} from "../lib/classes/SlashCommands";
-import {Client, CommandInteraction} from "discord.js";
+import {ChatInputCommandInteraction, Client} from "discord.js";
 
 export class Stash extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
@@ -9,7 +9,7 @@ export class Stash extends SlashCommand implements BotCommand {
     });
   }
 
-  handleCmd(interaction: CommandInteraction) {
+  handleCmd(interaction: ChatInputCommandInteraction) {
     if (!interaction.member) return;
 
     interaction.reply({

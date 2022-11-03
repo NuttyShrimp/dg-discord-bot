@@ -1,4 +1,3 @@
-import fetch from "node-fetch";
 import * as Sentry from "@sentry/node";
 import { rest } from "../lib/classes/SlashCommands";
 import { APIGuildMember, Routes } from "discord-api-types/v10";
@@ -6,6 +5,7 @@ import { config } from "../lib/config";
 import { patreonRoleIds } from "../constants";
 import { bot } from "../lib/botInfo";
 import { GuildMember } from "discord.js";
+import axios from 'axios';
 
 class PatreonRoles {
   private interval: NodeJS.Timer;
@@ -33,21 +33,20 @@ class PatreonRoles {
         role.members.forEach(m => patreonMembers.push(m));
       }
 
-      const patreonMetaRes = await fetch(encodeURI("https://www.patreon.com/api/oauth2/api/campaigns/4967469/pledges?page[count]=1"), {
+      const patreonMetaData = await axios.get<{ meta: { count: number } }>(encodeURI("https://www.patreon.com/api/oauth2/api/campaigns/4967469/pledges?page[count]=1"), {
         headers: {
           Authorization: "Bearer NXyL5nFXq9t1MRKZYy0gT-1FKaHYYtBJPCw_FQba7PA",
         }
       });
-      const patreonMetaData = await patreonMetaRes.json() as { meta: { count: number } };
       if (!patreonMetaData) return;
-      if (!patreonMetaData.meta.count) return;
+      if (!patreonMetaData.data.meta.count) return;
 
-      const patreonRes = await fetch(encodeURI(`https://www.patreon.com/api/oauth2/api/campaigns/4967469/pledges?page[count]=${patreonMetaData.meta.count}&include=patron.null,reward.null`), {
+      const patreonRes = await axios.get<Patreon.PledeResponse>(encodeURI(`https://www.patreon.com/api/oauth2/api/campaigns/4967469/pledges?page[count]=${patreonMetaData.data.meta.count}&include=patron.null,reward.null`), {
         headers: {
           Authorization: "Bearer NXyL5nFXq9t1MRKZYy0gT-1FKaHYYtBJPCw_FQba7PA",
         }
       });
-      const patreonData = await patreonRes.json() as Patreon.PledeResponse;
+      const patreonData = patreonRes.data;
       if (!patreonData) return;
       const activePledges = patreonData.data.filter(p => p.attributes.declined_since === null);
       const users = patreonData.included.filter(e => e.type === "user") as Patreon.User[];
