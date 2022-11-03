@@ -71,7 +71,8 @@ export default class SlashCommand extends Module implements BotCommand {
     // Check if user has one of the roles
     if (!interaction.member) return false;
     if (this.roles.length === 0) return true;
-    if(!(interaction.member.roles as GuildMemberRoleManager).cache.some(role => this.roles.includes(role.id))) {
+    const roleManager = interaction.member.roles as GuildMemberRoleManager;
+    if(!roleManager.cache.some(plyRole => this.roles.find(roleId => roleId === plyRole.id))) {
       interaction.reply({
         content: "You don't have the required role to run this command",
         ephemeral: true,
