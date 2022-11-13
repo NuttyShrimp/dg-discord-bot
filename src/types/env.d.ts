@@ -18,6 +18,8 @@ declare global {
       MARIADB_USER: string;
       MARIADB_PASSWORD: string;
       MARIADB_DATABASE: string;
+      TRELLO_API_KEY: string;
+      TRELLO_API_TOKEN: string;
     }
   }
 }
