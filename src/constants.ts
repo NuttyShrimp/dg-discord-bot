@@ -14,7 +14,7 @@ export const logChannels = {
 
 export const roleIds = {
   staff: "747854877094576129",
-  dev: "738152103868104727",
+  dev: "706903572058603541",
   hoofdIntaker: "976540824663916544",
   intaker: "832985559986602036",
   intakerTrainee: "999236214244769802",
