@@ -6,4 +6,4 @@ export { Stash } from "./stash";
 export { Sticky } from "./sticky";
 export { Clear } from "./clear";
 export { AddMember, AddIntaker, AddIntakerTrainee } from "./addRoles";
-export { BetaInfo, AddBetaParticipants, ReportBug } from './testEvent';
+export { BetaInfo, AddBetaParticipants, ReportBug, AddBetaParticipantsVoice } from './testEvent';

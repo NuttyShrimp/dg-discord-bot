@@ -1,13 +1,13 @@
-import SlashCommand, { BotCommand } from '../lib/classes/SlashCommands';
-import { Client, CommandInteraction, GuildMemberRoleManager } from 'discord.js';
-import { BETA_TEST, roleIds } from '../constants';
-import { APIEmbed } from 'discord-api-types/v10';
+import SlashCommand, { BotCommand } from "../lib/classes/SlashCommands";
+import { Client, CommandInteraction, GuildMemberRoleManager } from "discord.js";
+import { BETA_TEST, roleIds } from "../constants";
+import { APIEmbed } from "discord-api-types/v10";
 import axios from "axios";
 
 export class BetaInfo extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
-    super('showbetainfo', bot, {
-      description: 'show information about test evt',
+    super("showbetainfo", bot, {
+      description: "show information about test evt",
       roles: [roleIds.dev]
     });
   }
@@ -25,7 +25,7 @@ export class BetaInfo extends SlashCommand implements BotCommand {
         },
         {
           name: "Enkele afspraken",
-          value: 'Je streamt deze test **NIET**, (ook niet onder de vriendjes)\nAlle bugs dienen gemeld te worden\nEr worden geen opnames gedeeld buiten de daarvoor bestemde upload zone',
+          value: "Je streamt deze test **NIET**, (ook niet onder de vriendjes)\nAlle bugs dienen gemeld te worden\nEr worden geen opnames gedeeld buiten de daarvoor bestemde upload zone",
         },
         {
           name: "Hoe gaat da in zijne gang",
@@ -52,11 +52,11 @@ export class BetaInfo extends SlashCommand implements BotCommand {
           value: "**upload zone**: https://nextcloud.nuttyshrimp.me/s/ZmPfwCfFSK6qcoR\n**Trello board**: https://trello.com/b/CFRUxcPS/dg-test-evt\n**Activiteiten sheet**: https://docs.google.com/spreadsheets/d/12HIFMsoRskVkwkAbMLpf8hq40mJ9lJIuUIbYD3ihAGk/edit?usp=sharing"
         }
       ]
-    }
+    };
 
     interaction.channel.send({
       embeds: [infoEmbed]
-    })
+    });
     interaction.reply({
       content: "done",
       ephemeral: true
@@ -66,8 +66,8 @@ export class BetaInfo extends SlashCommand implements BotCommand {
 
 export class AddBetaParticipants extends SlashCommand implements BotCommand {
   constructor(bot: Client) {
-    super('addbetaparticipants', bot, {
-      description: 'Add participant to beta test channel',
+    super("addbetaparticipants", bot, {
+      description: "Add participant to beta test channel",
       roles: [roleIds.dev]
     });
   }
@@ -77,7 +77,30 @@ export class AddBetaParticipants extends SlashCommand implements BotCommand {
 
     if (!interaction.channel.isTextBased() || interaction.channel.isThread() || interaction.channel.isDMBased()) return;
     for (const participant of BETA_TEST.participants) {
-      interaction.channel.permissionOverwrites.edit(participant, { SendMessages: true, ViewChannel: true, CreateInstantInvite: false, SendMessagesInThreads: true, CreatePrivateThreads: false, EmbedLinks: true, AttachFiles: false })
+      interaction.channel.permissionOverwrites.edit(participant, { SendMessages: true, ViewChannel: true, CreateInstantInvite: false, SendMessagesInThreads: true, CreatePrivateThreads: false, EmbedLinks: true, AttachFiles: false });
+    }
+
+    interaction.reply({
+      content: "done"
+    });
+  }
+}
+
+export class AddBetaParticipantsVoice extends SlashCommand implements BotCommand {
+  constructor(bot: Client) {
+    super("addbetaparticipantsvoice", bot, {
+      description: "Add participant to beta test channel",
+      roles: [roleIds.dev]
+    });
+  }
+
+  async handleCmd(interaction: CommandInteraction) {
+    if (!interaction.member) return;
+
+    const channel = await this.bot.channels.fetch("1042531462123094046");
+    if (!channel.isVoiceBased()) return;
+    for (const participant of BETA_TEST.participants) {
+      channel.permissionOverwrites.edit(participant, { SendMessages: true, ViewChannel: true, CreateInstantInvite: false, SendMessagesInThreads: true, CreatePrivateThreads: false, EmbedLinks: true, AttachFiles: false });
     }
 
     interaction.reply({
@@ -87,12 +110,12 @@ export class AddBetaParticipants extends SlashCommand implements BotCommand {
 }
 
 export class ReportBug extends SlashCommand implements BotCommand {
-  private allowedRoles = [roleIds.dev, roleIds.founder]
+  private allowedRoles = [roleIds.dev, roleIds.founder];
   constructor(bot: Client) {
-    super('reportbug', bot, {
-      description: 'Report a bug from the 2.0 test evt',
+    super("reportbug", bot, {
+      description: "Report a bug from the 2.0 test evt",
       roles: [],
-      aliases: ['rb'],
+      aliases: ["rb"],
       options: [
         {
           name: "title",
@@ -121,14 +144,14 @@ export class ReportBug extends SlashCommand implements BotCommand {
     if (!interaction.isChatInputCommand()) return;
     if (interaction.channelId !== BETA_TEST.channel) {
       interaction.reply({
-        content: 'This ain\'t the right channel buddy',
+        content: "This ain't the right channel buddy",
         ephemeral: true,
-      })
+      });
       return;
     }
-    
+
     const roleManager = interaction.member.roles as GuildMemberRoleManager;
-    if(!roleManager.cache.some(plyRole => !!this.allowedRoles.find(roleId => roleId === plyRole.id)) && !BETA_TEST.participants.includes(interaction.user.id)) {
+    if (!roleManager.cache.some(plyRole => !!this.allowedRoles.find(roleId => roleId === plyRole.id)) && !BETA_TEST.participants.includes(interaction.user.id)) {
       interaction.reply({
         content: "You don't have the required role to run this command",
         ephemeral: true,
@@ -147,7 +170,7 @@ export class ReportBug extends SlashCommand implements BotCommand {
           desc: (footage && footage.trim() !== "") ? `${description}\nfootage info: ${footage}` : description,
         },
         headers: {
-          'Accept': 'application/json'
+          "Accept": "application/json"
         }
       });
 
@@ -156,7 +179,7 @@ export class ReportBug extends SlashCommand implements BotCommand {
         ephemeral: true,
       });
     } catch (e) {
-      console.error(e)
+      console.error(e);
       interaction.reply({
         content: "failed to upload new card :/",
         embeds: [{
@@ -172,11 +195,11 @@ export class ReportBug extends SlashCommand implements BotCommand {
             },
             {
               name: "footage",
-              value: footage 
+              value: footage
             },
           ]
         }]
-      })
+      });
     }
   }
 }
