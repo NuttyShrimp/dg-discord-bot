@@ -43,7 +43,8 @@ export class PlayerCount extends Module implements BotModule {
           }
         ]
       });
-      console.error(e);
+      // TODO: uncomment when pushing :)
+      // console.error(e);
     }
   }
 
@@ -54,5 +55,4 @@ export class PlayerCount extends Module implements BotModule {
     this.fetchPlayerCount();
     this.plyFetchInterval = setInterval(() => this.fetchPlayerCount(), 20000);
   }
-
 }

@@ -1,6 +1,7 @@
 import {Module, BotModule, FilteredMessage} from "../lib/classes/AbstractModule";
 import {BaseInteraction, Client, EmbedBuilder, MessageType, TextChannel, User} from "discord.js";
 import {createMsgEmbed, parseAttachments} from "../lib/utils";
+import { channels } from "../constants";
 
 export class MessageCollector extends Module implements BotModule {
   private suggestionsChannel: TextChannel | null;
@@ -17,9 +18,9 @@ export class MessageCollector extends Module implements BotModule {
 
   start() {
     Object.entries({
-      [process.env.SUGGESTION_CHANNEL]: "suggestionsChannel",
-      [process.env.BUG_RECEIVE_CHANNEL]: "bugReportChannel",
-      [process.env.MESSAGELOGCHANNEL]: "messageLogChannel"
+      [channels.suggestionChannel]: "suggestionsChannel",
+      [channels.bugReceiveChannel]: "bugReportChannel",
+      [channels.messageLogChannel]: "messageLogChannel"
     }).forEach(([channelId, channel]) => {
       const _channel = this.bot.channels.cache.get(channelId);
       if (!_channel) {
@@ -34,7 +35,7 @@ export class MessageCollector extends Module implements BotModule {
   }
 
   private handleBugReport(msg: FilteredMessage) {
-    if (msg.channel.id !== process.env.BUG_SEND_CHANNEL) return;
+    if (msg.channel.id !== channels.bugSendChannel) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag;
     try {
@@ -50,7 +51,7 @@ export class MessageCollector extends Module implements BotModule {
   }
 
   private async handleSuggestion(msg: FilteredMessage) {
-    if (msg.channel.id !== process.env.SUGGESTION_CHANNEL) return;
+    if (msg.channel.id !== channels.suggestionChannel) return;
     if (msg.type === MessageType.ThreadCreated || msg.type === MessageType.ThreadStarterMessage) return;
     const photoURL = parseAttachments(msg);
     const author = msg.member.nickname ? msg.member.nickname : msg.author.tag;
@@ -89,6 +90,7 @@ export class MessageCollector extends Module implements BotModule {
 
   onMessage(msg: FilteredMessage) {
     // Cancer undocumented partial shit nobody wants to use or explain
+    console.log(msg);
     if (msg.channel.partial) return;
     if (msg.guild === null) return;
     this.handleSuggestion(msg);

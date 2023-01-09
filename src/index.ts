@@ -21,7 +21,7 @@ AppDataSource.initialize().then(() => {
   bot.login(config.BOT_TOKEN);
 }).catch(console.error);
 
-bot.on("ready", function () {
+bot.once("ready", function () {
   console.log("Bot started");
   botModules.forEach(bModule => {
     if (bModule.start) {

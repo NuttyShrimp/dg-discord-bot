@@ -5,14 +5,6 @@ declare global {
       APPLICATION_ID: string;
       GUILD_ID: string;
       // Message log channel
-      MESSAGELOGCHANNEL: string;
-      // React-role module
-      UITLEGCHANNEL: string;
-      REACT_ROLE_ID: string;
-      BUG_SEND_CHANNEL: string;
-      // Channel where bugs are posted
-      BUG_RECEIVE_CHANNEL: string;
-      SUGGESTION_CHANNEL: string;
       MARIADB_HOST: string;
       MARIADB_PORT: string;
       MARIADB_USER: string;

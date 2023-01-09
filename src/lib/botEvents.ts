@@ -1,5 +1,5 @@
 import {bot, botCommands, botModules} from "./botInfo";
-import {BaseInteraction, ChatInputCommandInteraction, ClientEvents, Interaction, Message, PartialMessage} from "discord.js";
+import {BaseInteraction, ChatInputCommandInteraction, Message, PartialMessage} from "discord.js";
 import {FilteredMessage} from "./classes/AbstractModule";
 
 const dispatchEvent = (event: string, ...args: any[]) => {
