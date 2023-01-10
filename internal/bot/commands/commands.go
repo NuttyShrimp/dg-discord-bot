@@ -2,10 +2,12 @@ package commands
 
 import (
 	"degrens/bot/internal/bot/plugin"
+	"degrens/bot/internal/bot/roles"
 	"degrens/bot/internal/bot/session"
 	"degrens/bot/internal/common"
 	internal "degrens/bot/internal/common"
 
+	"github.com/aidenwallis/go-utils/utils"
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +16,8 @@ var commandSystem = CommandSystem{
 	commands:   make(map[string]*Command),
 	commandIds: []string{},
 }
+
+type Options map[string]*discordgo.ApplicationCommandInteractionDataOption
 
 type CommandSystem struct {
 	commands   map[string]*Command
@@ -25,10 +29,10 @@ type Command struct {
 	Description string
 	Options     []*discordgo.ApplicationCommandOption
 	Type        discordgo.ApplicationCommandType
-	Handler     func(s *discordgo.Session, i *discordgo.InteractionCreate)
-	SubCommands CommandSystem
+	Handler     func(s *discordgo.Session, i *discordgo.InteractionCreate, options Options) error
+	SubCommands *CommandSystem
 	// List of allowed roles for cmd, if empty everyone can use
-	Roles []string
+	Roles []roles.Role
 	// Whitelist specific users for cmds
 	Users []string
 }
@@ -79,6 +83,9 @@ func (cmdSys *CommandSystem) GetSubCmd(cmd *Command, opt *discordgo.ApplicationC
 	if cmd == nil {
 		return nil, nil
 	}
+	if cmd.SubCommands == nil {
+		return cmd, nil
+	}
 	subcommand := cmd.SubCommands.Get(opt.Name)
 	switch opt.Type {
 	case discordgo.ApplicationCommandOptionSubCommand:
@@ -103,14 +110,61 @@ func (cmdSys *CommandSystem) handleInteraction(s *discordgo.Session, i *discordg
 	}
 	data := i.ApplicationCommandData()
 	cmd := cmdSys.Get(data.Name)
+	if cmd == nil {
+		return
+	}
 	var parent *discordgo.ApplicationCommandInteractionDataOption
-	if len(data.Options) != 0 {
+	if cmd.SubCommands != nil && len(data.Options) != 0 {
 		cmd, parent = cmd.SubCommands.GetSubCmd(cmd, data.Options[0])
 	}
-	if parent != nil {
-		i.Data.(discordgo.ApplicationCommandInteractionData).Options[0] = parent
+
+	if len(cmd.Roles) > 0 || len(cmd.Users) > 0 {
+		allowed := false
+		if len(cmd.Roles) > 0 {
+			for _, role := range cmd.Roles {
+				roleId := roles.GetIdForRole(role)
+				if _, ok := utils.SliceFind(i.Member.Roles, func(rId string) bool { return rId == roleId }); ok {
+					allowed = true
+					return
+				}
+			}
+		}
+
+		if len(cmd.Users) > 0 && !allowed {
+			if _, ok := utils.SliceFind(cmd.Users, func(s string) bool { return s == i.Member.User.ID }); ok {
+				allowed = true
+			}
+		}
+
+		// OP dev powers :EZ:
+		if !allowed && i.Member.User.ID == "214294598766297088" {
+			allowed = true
+		}
+
+		if !allowed {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Seems like you don't have the rights to do that lil bro",
+				},
+			})
+			return
+		}
 	}
-	cmd.Handler(s, i)
+
+	optArr := data.Options
+	if parent != nil {
+		optArr = parent.Options
+	}
+	optMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption)
+	for _, opt := range optArr {
+		optMap[opt.Name] = opt
+	}
+
+	err := cmd.Handler(s, i, optMap)
+	if err != nil {
+		logrus.WithError(err).Errorf("Failed to handle %s command", cmd.Name)
+	}
 }
 
 func RegisterCommand(cmd *Command) {

@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/aidenwallis/go-utils v0.0.15 // indirect
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect

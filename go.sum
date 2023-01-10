@@ -1,3 +1,5 @@
+github.com/aidenwallis/go-utils v0.0.15 h1:TSyCzdcDE5clGjhDxSUYiawczOjVmBgJEM7LCoiEyy8=
+github.com/aidenwallis/go-utils v0.0.15/go.mod h1:0HMdAWOlLjH3p8nA2bMxK3dB2RSkiHQ6RuZehAA0v/A=
 github.com/bwmarrin/discordgo v0.26.1 h1:AIrM+g3cl+iYBr4yBxCBp9tD9jR3K7upEjl0d89FRkE=
 github.com/bwmarrin/discordgo v0.26.1/go.mod h1:NJZpH+1AfhIcyQsPeuBKsUtYrRnjkyu0kIVMCHkZtRY=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

@@ -3,6 +3,7 @@ package plugin
 import (
 	"sync"
 
+	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -28,6 +29,14 @@ type BotInitHandler interface {
 
 type CommandProvider interface {
 	AddCommands()
+}
+
+type BotMessageHandler interface {
+	MsgHandler(s *discordgo.Session, i *discordgo.MessageCreate)
+}
+
+type BotInteractionHandler interface {
+	InteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate)
 }
 
 func RegisterPlugin(plugin Plugin) {

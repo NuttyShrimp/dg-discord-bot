@@ -2,6 +2,7 @@ package bot
 
 import (
 	"degrens/bot/internal/bot/commands"
+	"degrens/bot/internal/bot/events"
 	"degrens/bot/internal/bot/plugin"
 	"sync"
 )
@@ -25,6 +26,7 @@ func stopAllPlugins(wg *sync.WaitGroup) {
 
 func Run() {
 	commands.InitCommands()
+	events.InitEventSystem()
 	for _, p := range plugin.Plugins {
 		if initBot, ok := p.(plugin.BotInitHandler); ok {
 			initBot.BotInit()

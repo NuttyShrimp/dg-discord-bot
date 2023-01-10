@@ -1,23 +1,23 @@
 ## Commands
 - [x] f8 -> `connect play.degrensrp.be`
-- [ ] AddMember -> Give user burger role (intakers only)
-- [ ] clear -> remove x amount of messages
+- [x] AddMember -> Give user burger role (intakers only)
+- [x] clear -> remove x amount of messages
 - [ ] sticky -> manage sticky notes
-- [ ] wiki -> link to wiki
+- [x] wiki -> link to wiki
 
 ## Modules
 - [ ] Intakes v2
-- [ ] PlayerCount
 - [ ] Sticky messages
   - [ ] Replace message when new is posted
   - [ ] Fetch from DB
-- [ ] Antiscamlink
-- [ ] MessageCollector
-   - [ ] Recieve bugs -> send to hidden chan
-   - [ ] Report suggestions
-   - [ ] Message log
-- [ ] Playercount
+- [x] Antiscamlink
+- [x] MessageCollector
+   - [x] Recieve bugs -> send to hidden chan
+   - [x] Report suggestions
+   - [x] Message log
+- [x] Playercount
 
 ## Eco sys
 - [ ] Add sentry hook to logrus: https://github.com/botlabs-gg/yagpdb/blob/7b141646617e612adb70b3cdb85b81636bffcad3/common/run/run.go#L238
-- [ ] Finished allowlist for roles and users on cmd
+- [x] Finished allowlist for roles and users on cmd, add nutty as all allowed
+- [x] Event system for normal messages
