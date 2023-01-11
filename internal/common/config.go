@@ -10,6 +10,7 @@ var (
 	ConfBotToken = config.RegisterOption("BOT_TOKEN", nil)
 	ConfAppId    = config.RegisterOption("APPLICATION_ID", nil)
 	ConfGuildId  = config.RegisterOption("GUILD_ID", nil)
+	DGColor      = 0xE85476
 )
 
 var configLoaded = false

@@ -49,6 +49,9 @@ func (p *Plugin) MsgHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 }
 
 func (p *Plugin) InteractionHandler(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	if i.Type != discordgo.InteractionApplicationCommand {
+		return
+	}
 	LogMessage(s, &discordgo.Message{
 		Author:    i.Interaction.Member.User,
 		ChannelID: i.ChannelID,

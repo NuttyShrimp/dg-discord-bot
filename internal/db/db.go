@@ -27,6 +27,6 @@ func NewDb() (err error) {
 	if err != nil {
 		return err
 	}
-	DB.AutoMigrate(&models.StickyMessage{})
+	DB.AutoMigrate(&models.StickyMessage{}, &models.IntakeMessage{}, &models.IntakeForm{})
 	return nil
 }

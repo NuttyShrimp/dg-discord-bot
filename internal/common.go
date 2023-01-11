@@ -48,6 +48,8 @@ func setupGlobalDGoSession() error {
 
 	BotSession.MaxRestRetries = 10
 
+	BotSession.Identify.Intents = discordgo.IntentsAll
+
 	session.SetSession(BotSession)
 
 	BotSession.UpdateStatusComplex(discordgo.UpdateStatusData{
