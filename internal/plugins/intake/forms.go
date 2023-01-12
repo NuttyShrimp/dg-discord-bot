@@ -5,6 +5,7 @@ import (
 	"degrens/bot/internal/db"
 	"degrens/bot/internal/db/models"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -54,7 +55,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	err := SendDM(s, i.Member.User.ID, "Hey, dit is juist een test om te zien of we jou kunnen dmen. Veel geluk met je intake ;)")
+	err := SendDM(s, i.Member.User.ID, "Hey, dit is een test om te zien of we jou kunnen dmen. Veel geluk met je intake ;)")
 	if err != nil {
 		logrus.WithError(err).Warnf("Failed to send a DM to %s", i.Member.User.ID)
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
@@ -104,12 +105,11 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 
 func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	data := i.ModalSubmitData()
-	fmt.Println(i.Member.User.ID)
 	form := models.IntakeForm{
-		UserId: i.Member.User.ID,
+		UserId:   i.Member.User.ID,
+		CharName: data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		CharBG:   data.Components[1].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
 	}
-	form.CharName = data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
-	form.CharBG = data.Components[1].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
 	err := db.DB.Create(&form).Error
 	if err != nil {
 		err := SendDMEmbed(s, i.Member.User.ID, &discordgo.MessageEmbed{
@@ -153,24 +153,42 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Content: "Intake successvol ingediend",
+			Flags:   discordgo.MessageFlagsEphemeral,
 		},
 	})
 }
 
 func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	id := strings.TrimPrefix(i.MessageComponentData().CustomID, "intake-accept-")
+	idStr := strings.TrimPrefix(i.MessageComponentData().CustomID, "intake-accept-")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Kon de intake niet ophalen",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		logrus.WithError(err).Errorf("Failed to extract intake id from %s", idStr)
+		return
+	}
 	form := models.IntakeForm{}
-	err := db.DB.First(form, id).Error
+	err = db.DB.First(&form, uint(id)).Error
 	if err != nil {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: "Deze intake bestaat niet meer!",
+				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 		return
 	}
-	s.ChannelMessageEditEmbed(i.ChannelID, i.Message.ID, generateIntakeEmbed(s, &form, 0x219130))
+	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
+		Channel: i.ChannelID,
+		ID:      i.Message.ID,
+		Embeds:  []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0xff0000)},
+	})
 	s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), form.UserId, confIntakeVoiceRole.GetString())
 	SendDMEmbed(s, form.UserId, &discordgo.MessageEmbed{
 		Title:       "Intake informatie",
@@ -194,19 +212,37 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 }
 
 func revokeIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
-	id := strings.TrimPrefix(i.MessageComponentData().CustomID, "intake-revoke-")
+	idStr := strings.TrimPrefix(i.MessageComponentData().CustomID, "intake-revoke-")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Kon de intake niet ophalen",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		logrus.WithError(err).Errorf("Failed to extract intake id from %s", idStr)
+		return
+	}
 	form := models.IntakeForm{}
-	err := db.DB.First(form, id).Error
+	err = db.DB.First(&form, uint(id)).Error
 	if err != nil {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: "Deze intake bestaat niet meer!",
+				Flags:   discordgo.MessageFlagsEphemeral,
 			},
 		})
 		return
 	}
-	s.ChannelMessageEditEmbed(i.ChannelID, i.Message.ID, generateIntakeEmbed(s, &form, 0xff0000))
+	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
+		Channel:    i.ChannelID,
+		ID:         i.Message.ID,
+		Embeds:     []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0xff0000)},
+		Components: []discordgo.MessageComponent{},
+	})
 	SendDMEmbed(s, form.UserId, &discordgo.MessageEmbed{
 		Title:       "Intake informatie",
 		Description: "Oh no, het ziet er naar uit dat je intake afgekeurd is. Probeer het nog eens als je er klaar voor bent",
