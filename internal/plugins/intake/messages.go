@@ -41,7 +41,7 @@ func sendUitlegMsg() {
 					},
 					{
 						Name:  "Stap 1",
-						Value: "Neem alle regels op [onze wiki](wiki.degrensrp.be/nl/regels) **Grondig** door. Zorg ook dat je elke regel begrijpt en in eigen woorden kan uitleggen.",
+						Value: "Neem alle regels op [onze wiki](https://wiki.degrensrp.be/nl/regels) **Grondig** door. Zorg ook dat je elke regel begrijpt en in eigen woorden kan uitleggen.",
 					},
 					{
 						Name:  "Stap 2",

@@ -14,6 +14,7 @@ import (
 var (
 	confUitlegChan      = config.RegisterOption("CHANNELS_UITLEG", nil)
 	confIntakeRecvChan  = config.RegisterOption("CHANNELS_INTAKE_RECV", nil)
+	confIntakeLogChan   = config.RegisterOption("CHANNELS_INTAKE_LOGS", nil)
 	confIntakeVoiceRole = config.RegisterOption("ROLES_INTAKE_VOICE", nil)
 )
 

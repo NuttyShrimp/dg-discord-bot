@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
@@ -369,7 +370,14 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Channel: i.ChannelID,
 		ID:      i.Message.ID,
-		Embeds:  []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0xff0000)},
+		Embeds:  []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0x219130)},
+	})
+	s.ChannelMessageSendEmbed(confIntakeLogChan.GetString(), &discordgo.MessageEmbed{
+		Title:       "Intake goedgekeurd",
+		Description: fmt.Sprintf("<@%s>(%s) heeft <@%s>(%s) zijn intake goedgekeurd", i.Member.User.ID, i.Member.User.ID, form.UserId, form.UserId),
+		Color:       0x219130,
+		Fields:      generateIntakeFields(&form),
+		Timestamp:   time.Now().Format(time.RFC3339),
 	})
 	s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), form.UserId, confIntakeVoiceRole.GetString())
 	SendDMEmbed(s, form.UserId, &discordgo.MessageEmbed{
@@ -391,6 +399,13 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		},
 	})
 	db.DB.Delete(&form)
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "Succesvol goedgekeurd",
+			Flags:   discordgo.MessageFlagsEphemeral,
+		},
+	})
 }
 
 func revokeIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
@@ -425,9 +440,23 @@ func revokeIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Embeds:     []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0xff0000)},
 		Components: []discordgo.MessageComponent{},
 	})
+	s.ChannelMessageSendEmbed(confIntakeLogChan.GetString(), &discordgo.MessageEmbed{
+		Title:       "Intake afgekeurd",
+		Description: fmt.Sprintf("<@%s>(%s) heeft <@%s>(%s) zijn intake afgekeurd", i.Member.User.ID, i.Member.User.ID, form.UserId, form.UserId),
+		Color:       0xff0000,
+		Fields:      generateIntakeFields(&form),
+		Timestamp:   time.Now().Format(time.RFC3339),
+	})
 	SendDMEmbed(s, form.UserId, &discordgo.MessageEmbed{
 		Title:       "Intake informatie",
 		Description: "Oh no, het ziet er naar uit dat je intake afgekeurd is. Probeer het nog eens als je er klaar voor bent",
 	})
 	db.DB.Delete(&form)
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "Succesvol afgekeurd",
+			Flags:   discordgo.MessageFlagsEphemeral,
+		},
+	})
 }
