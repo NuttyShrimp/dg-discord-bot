@@ -31,12 +31,12 @@ func sendUitlegMsg() {
 				Fields: []*discordgo.MessageEmbedField{
 					{
 						Name:  "Welkom",
-						Value: "Welkom op DeGrensRP, Wij zijn een van de grootste GTA RP communities in Belgie\nVoordat je kunt beginnen RPen hier dien je eerst door ons intake process te gaan.",
+						Value: "Welkom op DeGrensRP, Wij zijn een van de grootste GTA RP communities in Belgie\nOm onze server te kunnen spelen moet je eerst door ons intake process gaan.",
 					},
 					{
 						Name: "Intake",
-						Value: `Hey leuk dat je wilt komen RPen op onze server. Voordat je begint aan het intake process dien je eerst je DM's te hebben open staan voor deze server. Anders zal het process automatisch falen.
-            Het intake process bestaat uit 2 delen. Je begint met je karakter schriftelijk voor te stellen, zie hieronder hoe je dit moet doen. Onze intakers zullen deze karakters beoordelen en op basis hiervan zal je kunnen doorgaan naar het 2de deel. Het 2de deel bestaat uit een mondeling gesprek met onze lieftallige intakers. Als dit gesprek goedverloopt zal je je burger role toegewezen krijgen waarmee je de server kunt joinen!
+						Value: `Voordat je begint aan het intake process moet je eerst je DM's hebben open staan voor deze server. Anders zal het process automatisch falen.
+            Het intake process bestaat uit 2 delen. Je begint met je karakter schriftelijk voor te stellen, zie hieronder hoe je dit moet doen. Onze intakers zullen deze karakters beoordelen en op basis hiervan zal je kunnen doorgaan naar het 2de deel. Het 2de deel bestaat uit een mondeling gesprek met onze lieftallige intakers. Als dit gesprek goedverloopt zal je je burger role toegewezen krijgen waarmee je toegang krijgt tot de server!
             `,
 					},
 					{
@@ -49,7 +49,7 @@ func sendUitlegMsg() {
 					},
 					{
 						Name:  "Stap 3",
-						Value: "Vul het whitelist formulier in. Dit kun je door op de knop onder dit bericht te drukken",
+						Value: "Vul het intake formulier in. Dit kun je door op de knop onder dit bericht te drukken, **LET OP** Het formulier bestaat uit 2 delen, nadat je het eerste deel ingediend hebt zul je een bericht krijgen met de knop om het 2de formulier te openen",
 					},
 					{
 						Name:  "Stap 4",

@@ -15,12 +15,36 @@ import (
 func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedField {
 	return []*discordgo.MessageEmbedField{
 		{
+			Name:  "Leeftijd",
+			Value: form.Leeftijd,
+		},
+		{
+			Name:  "RDM/VDM",
+			Value: form.RdmVdm,
+		},
+		{
 			Name:  "Karakter naam",
 			Value: form.CharBG,
 		},
 		{
-			Name:  "Karakter achtergrond",
-			Value: form.UserId,
+			Name:  "Karakter info + backstory",
+			Value: form.CharName,
+		},
+		{
+			Name:  "RP Ervaring",
+			Value: form.RPExp,
+		},
+		{
+			Name:  "Ooit gebanned?",
+			Value: form.BannedExp,
+		},
+		{
+			Name:  "Mic informatie",
+			Value: form.MicInfo,
+		},
+		{
+			Name:  "Wanneer is het oke om character te breken",
+			Value: form.CharBreak,
 		},
 	}
 }
@@ -67,19 +91,21 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 	}
 
+	// TODO: split in 2 modals
 	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseModal,
 		Data: &discordgo.InteractionResponseData{
-			CustomID: "intake-form",
+			CustomID: "intake-form-p1",
 			Title:    "Intake formulier",
 			Components: []discordgo.MessageComponent{
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
-							CustomID:  "char-name",
-							Label:     "Naam van je karakter",
+							CustomID:  "leeftijd",
+							Label:     "IRL Leeftijd",
 							Style:     discordgo.TextInputShort,
-							MinLength: 1,
+							MinLength: 2,
+							MaxLength: 3,
 							Required:  true,
 						},
 					},
@@ -87,11 +113,111 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
+							CustomID: "rdm-vdm",
+							Label:    "Wat is RDM/VDM",
+							Style:    discordgo.TextInputParagraph,
+							Required: true,
+						},
+					},
+				},
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
+							CustomID: "char-name",
+							Label:    "Naam van je karakter",
+							Style:    discordgo.TextInputShort,
+							Required: true,
+						},
+					},
+				},
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
 							CustomID:  "char-bg",
-							Label:     "Achtergrond informatie over je karakter",
+							Label:     "Beschrijf je karakter + geef een backstory",
 							Style:     discordgo.TextInputParagraph,
 							MinLength: 100,
 							Required:  true,
+						},
+					},
+				},
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
+							CustomID: "rp-exp",
+							Label:    "Voorgaande ervaring met RP",
+							Style:    discordgo.TextInputParagraph,
+							Required: false,
+						},
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		logrus.WithError(err).Info("Failed to open the intake formulier modal")
+	}
+}
+
+func openIntakeformP2(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	form := models.IntakeForm{}
+	err := db.DB.Where("user_id = ?", i.Member.User.ID).First(&form).Error
+	if err != nil {
+		err := SendDMEmbed(s, i.Member.User.ID, &discordgo.MessageEmbed{
+			Title:       "Er is een fout opgetreden",
+			Description: "Het ziet er naar uit dat we jouw intake niet konden ophalen.\nDoor discord hun popup systeem kan ik maar een deel van antwoorden terug geven",
+			Fields:      generateIntakeFields(&form),
+		})
+		if err != nil {
+			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+		}
+		return
+	}
+
+	if form.MicInfo != "" {
+		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionResponseData{
+				Content: "Je hebt je intake al ingediend",
+				Flags:   discordgo.MessageFlagsEphemeral,
+			},
+		})
+		return
+	}
+
+	err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseModal,
+		Data: &discordgo.InteractionResponseData{
+			CustomID: "intake-form-p2",
+			Title:    "Intake formulier",
+			Components: []discordgo.MessageComponent{
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
+							CustomID: "banned-exp",
+							Label:    "Ben je ooit gebanned geweest? zoja... Waarom?",
+							Style:    discordgo.TextInputShort,
+							Required: false,
+						},
+					},
+				},
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
+							CustomID: "mic-info",
+							Label:    "Welke type microfoon heb je?",
+							Style:    discordgo.TextInputShort,
+							Required: true,
+						},
+					},
+				},
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.TextInput{
+							CustomID: "char-break",
+							Label:    "Wanneer mag je je character te breken?",
+							Style:    discordgo.TextInputParagraph,
+							Required: true,
 						},
 					},
 				},
@@ -107,8 +233,11 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	data := i.ModalSubmitData()
 	form := models.IntakeForm{
 		UserId:   i.Member.User.ID,
-		CharName: data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
-		CharBG:   data.Components[1].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		Leeftijd: data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		RdmVdm:   data.Components[1].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		CharName: data.Components[2].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		CharBG:   data.Components[3].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
+		RPExp:    data.Components[4].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value,
 	}
 	err := db.DB.Create(&form).Error
 	if err != nil {
@@ -122,7 +251,58 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		}
 		return
 	}
-	// TODO: Send new intake in intake_recv channel
+	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+		Type: discordgo.InteractionResponseChannelMessageWithSource,
+		Data: &discordgo.InteractionResponseData{
+			Content: "Het eerste deel is ingediend, gebruik de knop hieronder om het laatste deel in te dienen",
+			Flags:   discordgo.MessageFlagsEphemeral,
+			Components: []discordgo.MessageComponent{
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.Button{
+							Label:    "Start deel 2",
+							CustomID: "open-intake-form-p2",
+						},
+					},
+				},
+			},
+		},
+	})
+}
+
+func finaliseForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
+	data := i.ModalSubmitData()
+	form := models.IntakeForm{}
+	err := db.DB.Where("user_id = ?", i.Member.User.ID).First(&form).Error
+	if err != nil {
+		err := SendDMEmbed(s, i.Member.User.ID, &discordgo.MessageEmbed{
+			Title:       "Er is een fout opgetreden",
+			Description: "Het ziet er naar uit dat we jouw intake niet konden ophalen.\nDoor discord hun popup systeem kan ik maar een deel van antwoorden terug geven",
+			Fields:      generateIntakeFields(&form),
+		})
+		if err != nil {
+			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+		}
+		return
+	}
+
+	form.BannedExp = data.Components[0].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+	form.MicInfo = data.Components[1].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+	form.CharBreak = data.Components[2].(*discordgo.ActionsRow).Components[0].(*discordgo.TextInput).Value
+
+	err = db.DB.Save(&form).Error
+	if err != nil {
+		err := SendDMEmbed(s, i.Member.User.ID, &discordgo.MessageEmbed{
+			Title:       "Er is een fout opgetreden",
+			Description: "Het ziet er naar uit dat we jouw intake niet konden ophalen.\nHierond vind je je antwoorden terug die je gebruikt hebt",
+			Fields:      generateIntakeFields(&form),
+		})
+		if err != nil {
+			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+		}
+		return
+	}
+
 	s.ChannelMessageSendComplex(confIntakeRecvChan.GetString(), &discordgo.MessageSend{
 		Embeds: []*discordgo.MessageEmbed{
 			generateIntakeEmbed(s, &form, 0xb15324),
@@ -135,10 +315,6 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 						Style:    discordgo.SuccessButton,
 						CustomID: fmt.Sprintf("intake-accept-%d", form.ID),
 					},
-				},
-			},
-			discordgo.ActionsRow{
-				Components: []discordgo.MessageComponent{
 					discordgo.Button{
 						Label:    "Decline",
 						Style:    discordgo.DangerButton,
@@ -147,6 +323,12 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				},
 			},
 		},
+	})
+
+	SendDMEmbed(s, i.Member.User.ID, &discordgo.MessageEmbed{
+		Title:       "Intake informatie",
+		Description: "Je intake is succesvol ingediend. Hieronder vind je een kopie van je antwoorden",
+		Fields:      generateIntakeFields(&form),
 	})
 
 	s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
