@@ -1,14 +1,18 @@
-FROM node:16-alpine
+FROM golang:1.19 AS builder
 
 WORKDIR /app
 
-COPY package.json ./package.json
-COPY yarn.lock ./yarn.lock
+COPY go.mod .
+COPY go.sum .
 
-RUN yarn install --frozen-lockfile
+RUN go mod download
 
-COPY . .
+COPY . ./
 
-RUN yarn build
+RUN CGO_ENABLED=0 GOOS=linux go build -o dg-disco cmds/bot/main.go
 
-CMD ["node", "dist/index.js"]
+FROM alpine:latest
+
+COPY --from=builder /app/dg-disco .
+
+CMD ./dg-disco
