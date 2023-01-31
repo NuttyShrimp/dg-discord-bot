@@ -25,11 +25,11 @@ func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedFiel
 		},
 		{
 			Name:  "Karakter naam",
-			Value: form.CharBG,
+			Value: form.CharName,
 		},
 		{
 			Name:  "Karakter info + backstory",
-			Value: form.CharName,
+			Value: form.CharBG,
 		},
 		{
 			Name:  "RP Ervaring",
@@ -216,7 +216,7 @@ func openIntakeformP2(s *discordgo.Session, i *discordgo.InteractionCreate) {
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
 							CustomID: "char-break",
-							Label:    "Wanneer mag je je character te breken?",
+							Label:    "In welk situatie kan je uit karakter gaan?",
 							Style:    discordgo.TextInputParagraph,
 							Required: true,
 						},
