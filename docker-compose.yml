@@ -14,7 +14,9 @@ services:
       MYSQL_PASSWORD: "f5JXoR?k!vntmKrpTG#tazjywbFyAf957TuMbpWAc4cTJi%GtCT9&EXgyHD!!ZTm"
   
   bot:
-    build: .
+    build:
+      context: .
+    image: dg_discord_bot:latest
     env_file: .env
     restart: always
     depends_on:

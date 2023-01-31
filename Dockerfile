@@ -14,5 +14,6 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o dg-disco cmds/bot/main.go
 FROM alpine:latest
 
 COPY --from=builder /app/dg-disco .
+COPY .env ./.env
 
 CMD ./dg-disco
