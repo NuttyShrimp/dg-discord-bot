@@ -368,9 +368,10 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
-		Channel: i.ChannelID,
-		ID:      i.Message.ID,
-		Embeds:  []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0x219130)},
+		Channel:    i.ChannelID,
+		ID:         i.Message.ID,
+		Embeds:     []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0x219130)},
+		Components: []discordgo.MessageComponent{},
 	})
 	s.ChannelMessageSendEmbed(confIntakeLogChan.GetString(), &discordgo.MessageEmbed{
 		Title:       "Intake goedgekeurd",
