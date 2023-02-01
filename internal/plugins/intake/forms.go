@@ -44,7 +44,7 @@ func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedFiel
 			Value: form.MicInfo,
 		},
 		{
-			Name:  "Wanneer is het oke om character te breken",
+			Name:  "In welk situatie kan je uit karakter gaan",
 			Value: form.CharBreak,
 		},
 	}
@@ -367,10 +367,14 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		return
 	}
+	var intakeEmbed = generateIntakeEmbed(s, &form, 0x219130)
+	intakeEmbed.Footer = &discordgo.MessageEmbedFooter{
+		Text: fmt.Sprintf("Goedgekeurd door <@%s>", i.Member.User.ID),
+	}
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Channel:    i.ChannelID,
 		ID:         i.Message.ID,
-		Embeds:     []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0x219130)},
+		Embeds:     []*discordgo.MessageEmbed{intakeEmbed},
 		Components: []discordgo.MessageComponent{},
 	})
 	s.ChannelMessageSendEmbed(confIntakeLogChan.GetString(), &discordgo.MessageEmbed{
@@ -435,10 +439,14 @@ func revokeIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		return
 	}
+	intakeEmbed := generateIntakeEmbed(s, &form, 0xff0000)
+	intakeEmbed.Footer = &discordgo.MessageEmbedFooter{
+		Text: fmt.Sprintf("Afgekeurd door <@%s>", i.Member.User.ID),
+	}
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Channel:    i.ChannelID,
 		ID:         i.Message.ID,
-		Embeds:     []*discordgo.MessageEmbed{generateIntakeEmbed(s, &form, 0xff0000)},
+		Embeds:     []*discordgo.MessageEmbed{intakeEmbed},
 		Components: []discordgo.MessageComponent{},
 	})
 	s.ChannelMessageSendEmbed(confIntakeLogChan.GetString(), &discordgo.MessageEmbed{
