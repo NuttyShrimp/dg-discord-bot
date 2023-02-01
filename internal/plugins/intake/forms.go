@@ -369,7 +369,7 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 	var intakeEmbed = generateIntakeEmbed(s, &form, 0x219130)
 	intakeEmbed.Footer = &discordgo.MessageEmbedFooter{
-		Text: fmt.Sprintf("Goedgekeurd door <@%s>", i.Member.User.ID),
+		Text: fmt.Sprintf("Goedgekeurd door %s", i.Member.User.String()),
 	}
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Channel:    i.ChannelID,
@@ -441,7 +441,7 @@ func revokeIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	}
 	intakeEmbed := generateIntakeEmbed(s, &form, 0xff0000)
 	intakeEmbed.Footer = &discordgo.MessageEmbedFooter{
-		Text: fmt.Sprintf("Afgekeurd door <@%s>", i.Member.User.ID),
+		Text: fmt.Sprintf("Afgekeurd door %s", i.Member.User.String()),
 	}
 	s.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Channel:    i.ChannelID,
