@@ -5,6 +5,7 @@ import (
 	"degrens/bot/internal/db"
 	"degrens/bot/internal/db/models"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 	"time"
@@ -14,7 +15,7 @@ import (
 )
 
 func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedField {
-	return []*discordgo.MessageEmbedField{
+	fields := []*discordgo.MessageEmbedField{
 		{
 			Name:  "Leeftijd",
 			Value: form.Leeftijd,
@@ -27,27 +28,30 @@ func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedFiel
 			Name:  "Karakter naam",
 			Value: form.CharName,
 		},
-		{
-			Name:  "Karakter info + backstory",
-			Value: form.CharBG,
-		},
-		{
-			Name:  "RP Ervaring",
-			Value: form.RPExp,
-		},
-		{
-			Name:  "Ooit gebanned?",
-			Value: form.BannedExp,
-		},
-		{
-			Name:  "Mic informatie",
-			Value: form.MicInfo,
-		},
-		{
-			Name:  "In welk situatie kan je uit karakter gaan",
-			Value: form.CharBreak,
-		},
 	}
+	parts := int(math.Ceil(float64(len(form.CharBG) / 1000)))
+	for i := 0; i < parts; i++ {
+		partLen := int(math.Min(float64(1000+(i*1000)), float64(len(form.CharBG))))
+		fields = append(fields, &discordgo.MessageEmbedField{
+			Name:  fmt.Sprintf("Karater info + backstory (%d/%d)", i+1, parts),
+			Value: form.CharBG[0+(i*1000) : partLen],
+		})
+	}
+
+	fields = append(fields, &discordgo.MessageEmbedField{
+		Name:  "RP Ervaring",
+		Value: form.RPExp,
+	}, &discordgo.MessageEmbedField{
+		Name:  "Ooit gebanned?",
+		Value: form.BannedExp,
+	}, &discordgo.MessageEmbedField{
+		Name:  "Mic informatie",
+		Value: form.MicInfo,
+	}, &discordgo.MessageEmbedField{
+		Name:  "In welk situatie kan je uit karakter gaan",
+		Value: form.CharBreak,
+	})
+	return fields
 }
 
 func generateIntakeEmbed(s *discordgo.Session, form *models.IntakeForm, color int) *discordgo.MessageEmbed {
@@ -114,10 +118,11 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
-							CustomID: "rdm-vdm",
-							Label:    "Wat is RDM/VDM",
-							Style:    discordgo.TextInputParagraph,
-							Required: true,
+							CustomID:  "rdm-vdm",
+							Label:     "Wat is RDM/VDM",
+							MaxLength: 1000,
+							Style:     discordgo.TextInputParagraph,
+							Required:  true,
 						},
 					},
 				},
@@ -145,10 +150,11 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
-							CustomID: "rp-exp",
-							Label:    "Voorgaande ervaring met RP",
-							Style:    discordgo.TextInputParagraph,
-							Required: false,
+							CustomID:  "rp-exp",
+							Label:     "Voorgaande ervaring met RP",
+							MaxLength: 1000,
+							Style:     discordgo.TextInputParagraph,
+							Required:  false,
 						},
 					},
 				},
@@ -215,10 +221,11 @@ func openIntakeformP2(s *discordgo.Session, i *discordgo.InteractionCreate) {
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.TextInput{
-							CustomID: "char-break",
-							Label:    "In welk situatie kan je uit karakter gaan?",
-							Style:    discordgo.TextInputParagraph,
-							Required: true,
+							CustomID:  "char-break",
+							Label:     "In welk situatie kan je uit karakter gaan?",
+							Style:     discordgo.TextInputParagraph,
+							MaxLength: 1000,
+							Required:  true,
 						},
 					},
 				},
