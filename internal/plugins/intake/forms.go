@@ -29,7 +29,7 @@ func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedFiel
 			Value: form.CharName,
 		},
 	}
-	parts := int(math.Ceil(float64(len(form.CharBG) / 1000)))
+	parts := int(math.Ceil(float64(len(form.CharBG)) / 1000.0))
 	for i := 0; i < parts; i++ {
 		partLen := int(math.Min(float64(1000+(i*1000)), float64(len(form.CharBG))))
 		fields = append(fields, &discordgo.MessageEmbedField{
@@ -71,16 +71,36 @@ func generateIntakeEmbed(s *discordgo.Session, form *models.IntakeForm, color in
 
 func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	// Check if user already has submitted a form
-	var count int64
-	db.DB.Model(&models.IntakeForm{}).Where("user_id = ?", i.Member.User.ID).Count(&count)
-	if count != 0 {
-		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseChannelMessageWithSource,
-			Data: &discordgo.InteractionResponseData{
-				Content: "Je hebt je intake al ingediend",
-				Flags:   discordgo.MessageFlagsEphemeral,
-			},
-		})
+	form := &models.IntakeForm{}
+	db.DB.Where("user_id = ?", i.Member.User.ID).First(form)
+	if form != nil {
+		if form.BannedExp != "" {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Je hebt je intake al ingediend",
+					Flags:   discordgo.MessageFlagsEphemeral,
+				},
+			})
+		} else {
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "Het eerste deel is ingediend, gebruik de knop hieronder om het laatste deel in te dienen",
+					Flags:   discordgo.MessageFlagsEphemeral,
+					Components: []discordgo.MessageComponent{
+						discordgo.ActionsRow{
+							Components: []discordgo.MessageComponent{
+								discordgo.Button{
+									Label:    "Start deel 2",
+									CustomID: "open-intake-form-p2",
+								},
+							},
+						},
+					},
+				},
+			})
+		}
 		return
 	}
 
