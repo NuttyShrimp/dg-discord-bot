@@ -4,6 +4,7 @@ import (
 	"degrens/bot/internal/common"
 	"degrens/bot/internal/db"
 	"degrens/bot/internal/db/models"
+	"errors"
 	"fmt"
 	"math"
 	"strconv"
@@ -12,6 +13,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 )
 
 func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedField {
@@ -72,8 +74,12 @@ func generateIntakeEmbed(s *discordgo.Session, form *models.IntakeForm, color in
 func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	// Check if user already has submitted a form
 	form := &models.IntakeForm{}
-	db.DB.Where("user_id = ?", i.Member.User.ID).First(form)
-	if form != nil {
+	err := db.DB.Where("user_id = ?", i.Member.User.ID).First(form).Error
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		logrus.WithError(err).Warnf("Failed to fetch a intake form for %s", i.Member.User.ID)
+		return
+	}
+	if form.ID != 0 {
 		if form.BannedExp != "" {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -104,7 +110,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		return
 	}
 
-	err := SendDM(s, i.Member.User.ID, "Hey, dit is een test om te zien of we jou kunnen dmen. Veel geluk met je intake ;)")
+	err = SendDM(s, i.Member.User.ID, "Hey, dit is een test om te zien of we jou kunnen dmen. Veel geluk met je intake ;)")
 	if err != nil {
 		logrus.WithError(err).Warnf("Failed to send a DM to %s", i.Member.User.ID)
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
