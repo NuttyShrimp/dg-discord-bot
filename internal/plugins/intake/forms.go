@@ -1,6 +1,7 @@
 package intake
 
 import (
+	"degrens/bot/internal/bot/roles"
 	"degrens/bot/internal/common"
 	"degrens/bot/internal/db"
 	"degrens/bot/internal/db/models"
@@ -417,7 +418,7 @@ func acceptIntake(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		Fields:      generateIntakeFields(&form),
 		Timestamp:   time.Now().Format(time.RFC3339),
 	})
-	s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), form.UserId, confIntakeVoiceRole.GetString())
+	s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), form.UserId, roles.GetIdForRole("intake-voice"))
 	SendDMEmbed(s, form.UserId, &discordgo.MessageEmbed{
 		Title:       "Intake informatie",
 		Description: "Proficiat je bent door de eerste rond van intakes geraakt. De 2de en laatste ronde staat hieronder weer beschreven",
