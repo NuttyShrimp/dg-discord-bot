@@ -38,6 +38,18 @@ type Command struct {
 }
 
 func InitCommands() {
+	oldCmds, err := session.BotSession.ApplicationCommands(session.BotSession.State.User.ID, internal.ConfGuildId.GetString())
+	if err != nil {
+		logrus.WithError(err).Error("Failed to retrieve old commands from discord")
+	} else {
+		for _, oCmd := range oldCmds {
+			err := session.BotSession.ApplicationCommandDelete(session.BotSession.State.User.ID, internal.ConfGuildId.GetString(), oCmd.ID)
+			if err != nil {
+				logrus.WithError(err).Errorf("Cannot delete '%v' commandv", oCmd.Name)
+			}
+		}
+	}
+
 	for _, v := range plugin.Plugins {
 		if adder, ok := v.(plugin.CommandProvider); ok {
 			adder.AddCommands()
