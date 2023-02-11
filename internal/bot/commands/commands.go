@@ -158,6 +158,7 @@ func (cmdSys *CommandSystem) handleInteraction(s *discordgo.Session, i *discordg
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
 					Content: "Seems like you don't have the rights to do that lil bro",
+					Flags:   discordgo.MessageFlagsEphemeral,
 				},
 			})
 			return
