@@ -28,13 +28,14 @@ func Init() {
 		Dsn: "https://e956f2798bfc4b7d89f14f6e0880eb2e@sentry.nuttyshrimp.me/13",
 		// Enable printing of SDK debug messages.
 		// Useful when getting started or trying to figure something out.
-		Debug: false,
+		Debug:            false,
+		EnableTracing:    true,
+		TracesSampleRate: 1.0,
 	})
 
 	sentryhook := sentryhook.Hook{}
 	logrus.AddHook(sentryhook)
 
-	// TODO: add sentry hook
 	if err = setupGlobalDGoSession(); err != nil {
 		log.WithError(err).Fatal("Failed to create discordgo session")
 	}
@@ -45,6 +46,7 @@ func Init() {
 func Run() {
 	bot.Run()
 	run.ListenSignal()
+	defer sentry.Recover()
 }
 
 func getBotToken() string {

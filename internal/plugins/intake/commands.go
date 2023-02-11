@@ -57,10 +57,16 @@ func (p *Plugin) AddCommands() {
 				Title: fmt.Sprintf("Voice intake %s", action),
 			}
 
-			s.GuildMemberRoleRemove(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("intake-voice"))
+			err := s.GuildMemberRoleRemove(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("intake-voice"))
+			if err != nil {
+				return err
+			}
 			if action == "accept" {
-				s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("burger"))
-				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				err = s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("burger"))
+				if err != nil {
+					return err
+				}
+				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
 						Content: fmt.Sprintf("<@%s> heeft zijn burger role ontvangen", target.ID),
@@ -99,7 +105,7 @@ func (p *Plugin) AddCommands() {
 				logEmbed.Color = 0xff0000
 				logEmbed.Description = fmt.Sprintf("%s heeft %s afgewezen opmerking: %s", i.Member.User.String(), target.String(), options["message"].StringValue())
 			}
-			_, err := s.ChannelMessageSendEmbed(confIntakeActionLogChan.GetString(), logEmbed)
+			_, err = s.ChannelMessageSendEmbed(confIntakeActionLogChan.GetString(), logEmbed)
 			return err
 		},
 		Roles: []roles.Role{

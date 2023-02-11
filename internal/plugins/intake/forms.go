@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/getsentry/sentry-go"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
@@ -78,6 +79,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	err := db.DB.Where("user_id = ?", i.Member.User.ID).First(form).Error
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.WithError(err).Warnf("Failed to fetch a intake form for %s", i.Member.User.ID)
+		sentry.CurrentHub().CaptureException(err)
 		return
 	}
 	if form.ID != 0 {
@@ -114,6 +116,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	err = SendDM(s, i.Member.User.ID, "Hey, dit is een test om te zien of we jou kunnen dmen. Veel geluk met je intake ;)")
 	if err != nil {
 		logrus.WithError(err).Warnf("Failed to send a DM to %s", i.Member.User.ID)
+		sentry.CurrentHub().CaptureException(err)
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
@@ -190,6 +193,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	})
 	if err != nil {
 		logrus.WithError(err).Info("Failed to open the intake formulier modal")
+		sentry.CurrentHub().CaptureException(err)
 	}
 }
 
@@ -204,6 +208,7 @@ func openIntakeformP2(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		if err != nil {
 			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+			sentry.CurrentHub().CaptureException(err)
 		}
 		return
 	}
@@ -261,6 +266,7 @@ func openIntakeformP2(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	})
 	if err != nil {
 		logrus.WithError(err).Info("Failed to open the intake formulier modal")
+		sentry.CurrentHub().CaptureException(err)
 	}
 }
 
@@ -283,6 +289,7 @@ func saveForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		if err != nil {
 			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+			sentry.CurrentHub().CaptureException(err)
 		}
 		return
 	}
@@ -317,6 +324,7 @@ func finaliseForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		if err != nil {
 			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+			sentry.CurrentHub().CaptureException(err)
 		}
 		return
 	}
@@ -334,6 +342,7 @@ func finaliseForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 		})
 		if err != nil {
 			logrus.WithError(err).WithField("form", form).Warnf("Failed to send a embed to %s with a intake form", form.UserId)
+			sentry.CurrentHub().CaptureException(err)
 		}
 		return
 	}

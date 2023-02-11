@@ -9,6 +9,7 @@ import (
 
 	"github.com/aidenwallis/go-utils/utils"
 	"github.com/bwmarrin/discordgo"
+	"github.com/getsentry/sentry-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -177,6 +178,7 @@ func (cmdSys *CommandSystem) handleInteraction(s *discordgo.Session, i *discordg
 	err := cmd.Handler(s, i, optMap)
 	if err != nil {
 		logrus.WithError(err).Errorf("Failed to handle %s command", cmd.Name)
+		sentry.CurrentHub().CaptureException(err)
 	}
 }
 
