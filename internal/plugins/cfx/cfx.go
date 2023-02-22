@@ -58,11 +58,17 @@ func FetchPlayerCount() {
 		logrus.WithError(err).Error("failed to deserialize info object")
 		return
 	}
+	if info.Vars.Queue == "" {
+		info.Vars.Queue = "0"
+	}
+	if info.Vars.Connected == "" {
+		info.Vars.Connected = "0"
+	}
 	session.BotSession.UpdateStatusComplex(discordgo.UpdateStatusData{
 		Status: "online",
 		Activities: []*discordgo.Activity{
 			{
-				Name: fmt.Sprintf("%d(%d) spelers", info.Vars.Connected, info.Vars.Queue),
+				Name: fmt.Sprintf("%s(%s) spelers", info.Vars.Connected, info.Vars.Queue),
 				Type: discordgo.ActivityTypeWatching,
 			},
 		},

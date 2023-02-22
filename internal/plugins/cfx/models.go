@@ -2,7 +2,7 @@ package cfx
 
 type ServerInfo struct {
 	Vars struct {
-		Connected int `json:"sv_connectedCount"`
-		Queue     int `json:"sv_queueCount"`
+		Connected string `json:"sv_connectedCount"`
+		Queue     string `json:"sv_queueCount"`
 	} `json:"vars"`
 }
