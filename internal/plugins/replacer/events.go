@@ -10,9 +10,5 @@ func (p *Plugin) MsgHandler(s *discordgo.Session, i *discordgo.MessageCreate) {
 		{
 			handleBugMsg(s, i)
 		}
-	case confSuggestionChan.GetString():
-		{
-			handleSuggestionMsg(s, i)
-		}
 	}
 }

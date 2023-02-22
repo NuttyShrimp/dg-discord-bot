@@ -31,24 +31,30 @@ func RegisterPlugin() {
 }
 
 func handleBugMsg(s *discordgo.Session, i *discordgo.MessageCreate) {
+	respEmbed := &discordgo.MessageEmbed{
+		Author: &discordgo.MessageEmbedAuthor{
+			Name: i.Author.String(),
+			URL:  i.Author.AvatarURL(""),
+		},
+		Title:       "Bug Report",
+		Description: i.Message.Content,
+		Fields:      []*discordgo.MessageEmbedField{},
+	}
+
+	if len(i.Message.Attachments) > 0 {
+		respEmbed.Fields = append(respEmbed.Fields,
+			&discordgo.MessageEmbedField{
+				Name: "Attachments",
+				Value: strings.Join(utils.SliceMap(i.Message.Attachments, func(v *discordgo.MessageAttachment) string {
+					return v.ProxyURL
+				}), "\n"),
+			},
+		)
+	}
+
 	_, err := s.ChannelMessageSendComplex(confBugRecvChan.GetString(), &discordgo.MessageSend{
 		Embeds: []*discordgo.MessageEmbed{
-			{
-				Author: &discordgo.MessageEmbedAuthor{
-					Name: i.Author.String(),
-					URL:  i.Author.AvatarURL(""),
-				},
-				Title:       "Bug Report",
-				Description: i.Message.Content,
-				Fields: []*discordgo.MessageEmbedField{
-					{
-						Name: "Attachments",
-						Value: strings.Join(utils.SliceMap(i.Message.Attachments, func(v *discordgo.MessageAttachment) string {
-							return v.ProxyURL
-						}), "\n"),
-					},
-				},
-			},
+			respEmbed,
 		},
 	})
 	if err != nil {
@@ -56,34 +62,4 @@ func handleBugMsg(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 	s.ChannelMessageDelete(i.ChannelID, i.Message.ID)
-}
-
-// TODO: search a better way to embed the files/images
-func handleSuggestionMsg(s *discordgo.Session, i *discordgo.MessageCreate) {
-	_, err := s.ChannelMessageSendComplex(confBugRecvChan.GetString(), &discordgo.MessageSend{
-		Embeds: []*discordgo.MessageEmbed{
-			{
-				Author: &discordgo.MessageEmbedAuthor{
-					Name: i.Author.String(),
-					URL:  i.Author.AvatarURL(""),
-				},
-				Title:       "Bug Report",
-				Description: i.Message.Content,
-				Fields: []*discordgo.MessageEmbedField{
-					{
-						Name: "Attachments",
-						Value: strings.Join(utils.SliceMap(i.Message.Attachments, func(v *discordgo.MessageAttachment) string {
-							return v.ProxyURL
-						}), "\n"),
-					},
-				},
-			},
-		},
-	})
-	if err != nil {
-		logrus.WithError(err).Error("Failed to send bug report")
-		return
-	}
-	s.ChannelMessageDelete(i.ChannelID, i.Message.ID)
-
 }
