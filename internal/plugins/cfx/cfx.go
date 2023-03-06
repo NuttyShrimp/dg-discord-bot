@@ -77,7 +77,7 @@ func FetchPlayerCount() {
 
 func (p *Plugin) BotInit() {
 	FetchPlayerCount()
-	fetchInterval := time.NewTicker(20000 * time.Second)
+	fetchInterval := time.NewTicker(20 * time.Second)
 	quitInterval = make(chan bool)
 	go func() {
 		for {
