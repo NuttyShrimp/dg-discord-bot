@@ -25,7 +25,7 @@ func Init() {
 
 	sentry.Init(sentry.ClientOptions{
 		// Either set your DSN here or set the SENTRY_DSN environment variable.
-		Dsn: "https://e956f2798bfc4b7d89f14f6e0880eb2e@sentry.nuttyshrimp.me/13",
+		Dsn: "https://237a43a62a394377b0bc6dc69e12aed0@sentry.nuttyshrimp.me/7",
 		// Enable printing of SDK debug messages.
 		// Useful when getting started or trying to figure something out.
 		Debug:            false,
