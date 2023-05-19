@@ -32,7 +32,7 @@ func (p *Plugin) AddCommands() {
 	f8Cmd := commands.Command{
 		Name:        "f8",
 		Description: "Check hoe je de server kunt joinen",
-		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, _ commands.Options) error {
+		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, _ commands.Options) []error {
 			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
@@ -54,7 +54,7 @@ func (p *Plugin) AddCommands() {
 				Required:    false,
 			},
 		},
-		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) error {
+		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) []error {
 			if _, ok := options["target"]; !ok {
 				s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -76,10 +76,10 @@ func (p *Plugin) AddCommands() {
 				},
 			})
 			if err != nil {
-				return err
+				return []error{err}
 			}
 			lastWikiMsg, err = s.InteractionResponse(i.Interaction)
-			return nil
+			return []error{}
 		},
 	}
 	cmds := []*commands.Command{

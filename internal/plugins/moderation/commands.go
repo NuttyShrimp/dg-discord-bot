@@ -23,7 +23,7 @@ func (p *Plugin) AddCommands() {
 			},
 		},
 		Roles: []roles.Role{"staff", "developer"},
-		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) error {
+		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) []error {
 			num := options["count"].IntValue()
 			if num > 100 {
 				num = 100
@@ -31,7 +31,7 @@ func (p *Plugin) AddCommands() {
 
 			msgs, err := s.ChannelMessages(i.ChannelID, int(num), "", "", "")
 			if err != nil {
-				return err
+				return []error{err}
 			}
 			msgId := []string{}
 			for _, msg := range msgs {

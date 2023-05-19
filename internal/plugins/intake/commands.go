@@ -44,12 +44,15 @@ func (p *Plugin) AddCommands() {
 				Required:    false,
 			},
 		},
-		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) error {
+		Handler: func(s *discordgo.Session, i *discordgo.InteractionCreate, options commands.Options) []error {
+			errs := []error{}
 			if options["target"] == nil {
-				return errors.New("No target given for a new burger")
+				errs = append(errs, errors.New("No target given for a new burger"))
+				return errs
 			}
 			if options["action"] == nil {
-				return errors.New("No action given for a new burger")
+				errs = append(errs, errors.New("No action given for a new burger"))
+				return errs
 			}
 			target := options["target"].UserValue(s)
 			action := options["action"].StringValue()
@@ -57,24 +60,26 @@ func (p *Plugin) AddCommands() {
 				Title: fmt.Sprintf("Voice intake %s", action),
 			}
 
-			err := s.GuildMemberRoleRemove(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("intake-voice"))
-			if err != nil {
-				return err
+			if err := s.GuildMemberRoleRemove(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("intake-voice")); err != nil {
+				errs = append(errs, err)
+			}
+			if err := s.GuildMemberRoleRemove(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("bezoeker")); err != nil {
+				errs = append(errs, err)
 			}
 			if action == "accept" {
-				err = s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("burger"))
+				err := s.GuildMemberRoleAdd(common.ConfGuildId.GetString(), target.ID, roles.GetIdForRole("burger"))
 				if err != nil {
-					return err
+					errs = append(errs, err)
+					return errs
 				}
-				err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				if err = s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
 						Content: fmt.Sprintf("<@%s> heeft zijn burger role ontvangen", target.ID),
 						Flags:   discordgo.MessageFlagsEphemeral,
 					},
-				})
-				if err != nil {
-					return err
+				}); err != nil {
+					errs = append(errs, err)
 				}
 				logEmbed.Description = fmt.Sprintf("%s heeft %s toegelaten", i.Member.User.String(), target.String())
 				logEmbed.Color = 0x219130
@@ -83,30 +88,33 @@ func (p *Plugin) AddCommands() {
 				}
 			} else {
 				if options["message"] == nil {
-					err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+					if err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 						Type: discordgo.InteractionResponseChannelMessageWithSource,
 						Data: &discordgo.InteractionResponseData{
 							Content: "Bij een decline is een message verplicht",
 							Flags:   discordgo.MessageFlagsEphemeral,
 						},
-					})
-					return err
+					}); err != nil {
+						errs = append(errs, err)
+					}
+					return errs
 				}
-				err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				if err := s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
 						Content: fmt.Sprintf("<@%s> heeft zijn intake-voice role verloren", target.ID),
 						Flags:   discordgo.MessageFlagsEphemeral,
 					},
-				})
-				if err != nil {
-					return err
+				}); err != nil {
+					errs = append(errs, err)
 				}
 				logEmbed.Color = 0xff0000
 				logEmbed.Description = fmt.Sprintf("%s heeft %s afgewezen opmerking: %s", i.Member.User.String(), target.String(), options["message"].StringValue())
 			}
-			_, err = s.ChannelMessageSendEmbed(confIntakeActionLogChan.GetString(), logEmbed)
-			return err
+			if _, err := s.ChannelMessageSendEmbed(confIntakeActionLogChan.GetString(), logEmbed); err != nil {
+				errs = append(errs, err)
+			}
+			return errs
 		},
 		Roles: []roles.Role{
 			roles.DevRole,

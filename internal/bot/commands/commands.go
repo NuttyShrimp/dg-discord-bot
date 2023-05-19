@@ -30,7 +30,7 @@ type Command struct {
 	Description string
 	Options     []*discordgo.ApplicationCommandOption
 	Type        discordgo.ApplicationCommandType
-	Handler     func(s *discordgo.Session, i *discordgo.InteractionCreate, options Options) error
+	Handler     func(s *discordgo.Session, i *discordgo.InteractionCreate, options Options) []error
 	SubCommands *CommandSystem
 	// List of allowed roles for cmd, if empty everyone can use
 	Roles []roles.Role
@@ -175,10 +175,14 @@ func (cmdSys *CommandSystem) handleInteraction(s *discordgo.Session, i *discordg
 		optMap[opt.Name] = opt
 	}
 
-	err := cmd.Handler(s, i, optMap)
-	if err != nil {
-		logrus.WithError(err).Errorf("Failed to handle %s command", cmd.Name)
-		sentry.CurrentHub().CaptureException(err)
+	errs := cmd.Handler(s, i, optMap)
+	if errs != nil && len(errs) > 0 {
+		logEntry := logrus.NewEntry(logrus.StandardLogger())
+		for _, err := range errs {
+			logEntry.WithError(err)
+			sentry.CurrentHub().CaptureException(err)
+		}
+		logEntry.Errorf("Failed to handle %s command", cmd.Name)
 	}
 }
 
