@@ -138,7 +138,7 @@ func (cmdSys *CommandSystem) handleInteraction(s *discordgo.Session, i *discordg
 				roleId := roles.GetIdForRole(role)
 				if _, ok := utils.SliceFind(i.Member.Roles, func(rId string) bool { return rId == roleId }); ok {
 					allowed = true
-					return
+					break
 				}
 			}
 		}
