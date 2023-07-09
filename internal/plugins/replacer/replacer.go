@@ -3,6 +3,7 @@ package replacer
 import (
 	"degrens/bot/internal/bot/plugin"
 	"degrens/bot/internal/config"
+	"fmt"
 	"strings"
 
 	"github.com/aidenwallis/go-utils/utils"
@@ -62,4 +63,13 @@ func handleBugMsg(s *discordgo.Session, i *discordgo.MessageCreate) {
 		return
 	}
 	s.ChannelMessageDelete(i.ChannelID, i.Message.ID)
+
+	dmChan, err := s.UserChannelCreate(i.Author.ID)
+	if err != nil {
+		return
+	}
+	_, err = s.ChannelMessageSend(dmChan.ID, fmt.Sprintf("We hebben je bug report goed ontvangen!\nHieronder staat een kopie van je bericht (zonder attachments)\n\n%s", i.Message.Content))
+	if err != nil {
+		return
+	}
 }
