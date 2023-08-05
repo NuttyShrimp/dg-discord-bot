@@ -37,7 +37,7 @@ func generateIntakeFields(form *models.IntakeForm) []*discordgo.MessageEmbedFiel
 	for i := 0; i < parts; i++ {
 		partLen := int(math.Min(float64(1000+(i*1000)), float64(len(form.CharBG))))
 		fields = append(fields, &discordgo.MessageEmbedField{
-			Name:  fmt.Sprintf("Karater info + backstory (%d/%d)", i+1, parts),
+			Name:  fmt.Sprintf("Karakter info + backstory (%d/%d)", i+1, parts),
 			Value: form.CharBG[0+(i*1000) : partLen],
 		})
 	}
