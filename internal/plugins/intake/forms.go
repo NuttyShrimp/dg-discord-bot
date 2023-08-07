@@ -77,7 +77,7 @@ func openIntakeForm(s *discordgo.Session, i *discordgo.InteractionCreate) {
 	// Check if user already has submitted a form
 	form := &models.IntakeForm{}
 	err := db.DB.Where("user_id = ?", i.Member.User.ID).First(form).Error
-	if !errors.Is(err, gorm.ErrRecordNotFound) {
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
 		logrus.WithError(err).Warnf("Failed to fetch a intake form for %s", i.Member.User.ID)
 		sentry.CurrentHub().CaptureException(err)
 		return
