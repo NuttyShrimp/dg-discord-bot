@@ -34,7 +34,7 @@ func RegisterPlugin() {
 
 func FetchPlayerCount() {
 	logrus.Info("Fetching player count")
-	resp, err := http.Get("http://play.degrensrp.be:30120/info.json")
+	resp, err := http.Get("https://100.78.15.85:30120/info.json")
 	if err != nil || resp.StatusCode >= 400 {
 		session.BotSession.UpdateStatusComplex(discordgo.UpdateStatusData{
 			Status: "dnd",
