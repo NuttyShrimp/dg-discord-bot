@@ -19,6 +19,7 @@ var (
 	confIntakeVoiceRole   = config.RegisterOption("ROLES_INTAKE_VOICE", nil)
 	confIntakeRole        = config.RegisterOption("ROLES_INTAKER", nil)
 	confIntakeTraineeRole = config.RegisterOption("ROLES_INTAKER_TRAINEE", nil)
+	confBezoekerRole	  = config.RegisterOption("ROLES_BEZOEKER", nil)
 )
 
 func GetIdForRole(role Role) string {
@@ -35,6 +36,8 @@ func GetIdForRole(role Role) string {
 		return confIntakeRole.GetString()
 	case "intaker-trainee":
 		return confIntakeTraineeRole.GetString()
+	case "bezoeker":
+		return confBezoekerRole.GetString()
 	}
 	return ""
 }
